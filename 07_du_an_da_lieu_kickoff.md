@@ -1,300 +1,360 @@
-# 07 — Kickoff dự án Da liễu CK1
+# 07 — Khởi động dự án Da liễu chuyên khoa 1
 
-> File này là **bản đồ khởi động** dự án cụ thể. Không hướng dẫn từng dòng code — chỉ giúp anh hiểu **luồng tổng thể + tuần nào làm gì**.
+> Đây là **bản đồ khởi động** dự án cụ thể trong 2 tháng.
 >
 > **BẮT BUỘC** đọc [KET_QUA_DU_AN.md](KET_QUA_DU_AN.md) trước để rõ giá trị dự án. Nếu chưa thấy giá trị đủ mạnh, đừng bắt đầu.
 
 ## Bước 1 — Vấn đề cụ thể anh chọn giải
 
-Học CK1 Da liễu ở Hà Nội có 3 khó khăn thực tế:
+Học chuyên khoa 1 Da liễu ở Hà Nội có 3 khó khăn thực tế:
 
 1. **Không có thời gian ôn** — trực nhiều, khám nhiều
-2. **Khó nhớ hình ảnh** — 100 bệnh da lâm sàng nhìn giống nhau
-3. **Không biết đề thi hỏi gì** — không có bank câu hỏi công khai chuẩn
+2. **Khó nhớ hình ảnh** — hàng trăm bệnh da lâm sàng nhìn giống nhau
+3. **Không biết đề thi hỏi gì** — không có kho câu hỏi công khai chuẩn
 
-Tuần đầu cần chọn **1-2 khó khăn** để giải trước — đừng cố giải tất cả.
+Tuần đầu cần chọn **1-2 khó khăn** để giải trước — đừng cố giải tất cả cùng lúc.
 
-**Recommend**: chọn **khó khăn 1 + 2** (thời gian + hình ảnh). Xây bot Telegram push flashcard sáng + web PWA xem ảnh atlas offline. Khó khăn 3 (bank câu hỏi) đến sau khi có đủ 200 thẻ verify.
+**Gợi ý cho anh**: chọn **khó khăn 1 + 2** (thời gian + hình ảnh). Xây bot Telegram nhắc thẻ sáng + trang web xem ảnh atlas offline. Khó khăn 3 (kho câu hỏi) đến sau khi đã có 200 thẻ.
 
 ---
 
 ## Bước 2 — Bức tranh sản phẩm cuối cùng
 
-Sau 6 tuần, anh sẽ có 1 hệ thống chạy tự động:
+Sau 2 tháng, anh sẽ có 1 hệ thống chạy tự động. Kịch bản một ngày điển hình:
 
 **Sáng 6h30**:
 - Chuông điện thoại reo, mở Telegram
-- Bot đã gửi 5 flashcard mới (chọn thuật toán due-first — thẻ cần ôn nhất trước)
-- Anh vừa uống cà phê vừa bấm rating: "Nhớ / Khó / Quên / Chưa nhớ"
-- Bot tự cập nhật SRS state trong database
+- Bot đã gửi 5 thẻ ôn ưu tiên nhất (thẻ cần ôn nhất trước)
+- Anh vừa uống cà phê vừa bấm chọn: "Nhớ / Khó / Quên / Chưa nhớ"
+- Trạng thái ôn tự cập nhật vào kho dữ liệu
 
-**Trưa 12h30 nghỉ giữa 2 ca**:
+**Trưa 12h30 nghỉ giữa hai ca**:
 - Gõ `/quiz` vào bot
-- Bot gửi 5 câu MCQ ngẫu nhiên từ deck tuần trước (interleaving)
-- 3 phút xong, tăng retention
+- Bot gửi 5 câu trắc nghiệm ngẫu nhiên từ chương tuần trước
+- 3 phút xong, ôn nhẹ
 
-**Tối 20h vào laptop soạn thẻ mới**:
-- Mở web PWA (đã cài trên bookmark)
+**Tối 20h vào máy tính soạn thẻ mới**:
+- Mở trang web (đã cài trên bookmark)
 - Đăng nhập, vào trang "Soạn thẻ"
-- Parse thêm 1 chương sách CK1 bằng AI → sinh 20 flashcard candidate
-- Review từng thẻ, verify đáp án khớp sách, tag ICD-10, submit
+- Nhờ AI đọc 1 chương sách → gợi ý 20 thẻ nháp
+- Duyệt từng thẻ, kiểm tra đáp án đúng sách, gắn nhãn bệnh, lưu
 - Sáng mai 6h30 bot sẽ dùng thẻ mới này
 
-**Trực đêm bệnh viện, wifi lag**:
-- Mở web PWA đã cache offline
+**Trực đêm bệnh viện, mạng chập chờn**:
+- Mở trang web đã lưu sẵn offline
 - Xem lại ảnh atlas ca lâm sàng gặp trong đêm
-- Note vào 1 case study mới
+- Ghi ca đó vào ứng dụng cho lần sau
 
 **Cuối tuần Chủ nhật**:
-- Bot gửi báo cáo tuần: đã ôn 250 thẻ, retention 78%, streak 12 ngày
-- Mở web xem dashboard chi tiết theo tag ICD-10 — biết mình yếu block L40 (vảy nến)
+- Bot gửi báo cáo tuần: đã ôn 200 thẻ, nhớ 75%, chuỗi 12 ngày
+- Mở web xem bảng theo dõi chi tiết theo nhóm bệnh — biết mình yếu chỗ nào
 
 Đây là mục tiêu cuối. Không phải làm ngay tuần 1.
 
 ---
 
-## Bước 3 — Luồng chạy dưới capô (không cần code, chỉ cần hiểu)
+## Bước 3 — Luồng chạy dưới capô (không cần biết code)
 
-Kịch bản "sáng 6h30 nhận flashcard":
+Kịch bản "sáng 6h30 nhận thẻ" hoạt động thế nào:
 
-1. **pg_cron** (báo thức trong Supabase) đúng 6h30 giờ Việt Nam → trigger Edge Function tên `send-morning-flashcards`
-2. **Edge Function** truy vấn database — lấy 5 thẻ due nhất cho user anh, cùng các nút inline button "Nhớ / Khó / Quên"
-3. Edge Function gọi **Telegram Bot API** gửi 5 tin nhắn đến chat_id của anh
-4. Anh nhận notification trên điện thoại
-5. Bấm nút "Khó" → Telegram gọi **webhook** (URL callback) về Edge Function khác tên `bot-callback`
-6. `bot-callback` chạy thuật toán **SM-2 (Anki)** cập nhật SRS state: interval mới, ease factor mới, due date mới
-7. Ghi log vào bảng `review_log` để sau train FSRS optimizer
+1. **Y tá tự động** (chạy trong kho hồ sơ) đúng 6h30 giờ Việt Nam → gọi phòng xử lý
+2. **Phòng xử lý** truy vấn kho hồ sơ — lấy 5 thẻ ưu tiên nhất cho anh
+3. Phòng xử lý gọi API Telegram → gửi 5 tin nhắn kèm 4 nút bấm
+4. Anh nhận thông báo trên điện thoại
+5. Bấm nút "Khó" → Telegram gọi ngược về phòng xử lý khác
+6. Phòng xử lý này chạy thuật toán **ôn ngắt quãng** (thuật toán Anki) cập nhật trạng thái mới
+7. Ghi lịch sử vào kho hồ sơ để sau có dữ liệu tối ưu
 
-Xong 1 luồng, ~5 giây. Không cần máy anh chạy gì — mọi thứ trên Supabase cloud.
+Xong một luồng, khoảng 5 giây. Máy anh không cần chạy gì.
 
-Cùng data đó khi anh mở web app: đăng nhập → thấy progress đã cập nhật vì cùng chung 1 database.
-
----
-
-## Bước 4 — Tech stack (tóm tắt vai trò)
-
-| Vai trò | Chọn |
-|---|---|
-| Web frontend | Vite + React 19 + TanStack Router + shadcn/ui + Tailwind + vite-plugin-pwa |
-| Database + Auth | Supabase (free tier) |
-| Storage ảnh atlas | Cloudflare R2 (free 10GB) |
-| Bot backend | Supabase Edge Function (TypeScript) + pg_cron |
-| Bot alternative | Python + python-telegram-bot chạy laptop (khi cần scrape site trường) |
-| Deploy web | Vercel (free Hobby) |
-| AI dev chính | Claude Code (task lớn) |
-| AI dev rẻ | MiniMax API (extract sách, dịch, format) |
-| IDE | VS Code + extension Claude Code + Cline |
-
-Chi tiết mỗi món: file [04_tech_stack.md](04_tech_stack.md).
+Cùng dữ liệu đó khi anh mở trang web: đăng nhập → thấy tiến độ đã cập nhật vì cùng kho hồ sơ.
 
 ---
 
-## Bước 5 — Roadmap 6 tuần (mỗi tuần 2-3 giờ)
+## Bước 4 — Các món đồ nghề cần dùng (không đi vào chi tiết công nghệ)
 
-### Tuần 1 — Setup nền + học lý thuyết
+| Vai trò | Đại lượng | Miễn phí không? |
+|---|---|---|
+| Kho hồ sơ chính | Lưu 500-800 thẻ + đăng nhập + lịch tự động | Miễn phí |
+| Trang web | Anh làm việc chính, cài vào điện thoại, offline được | Miễn phí |
+| Bot Telegram | Nhắc thẻ sáng, quiz trưa, báo cáo tuần | Miễn phí |
+| Kho ảnh atlas | Lưu 100-200 ảnh ca lâm sàng | Miễn phí (đến 10GB) |
+| AI dev | Claude Code làm việc chính | 300-600 nghìn/tháng |
+| AI dev rẻ | MiniMax cho việc đơn giản (đọc sách, dịch) | 100-200 nghìn/tháng |
+| Nơi soạn code | VS Code (chương trình soạn thảo) | Miễn phí |
 
-**Mục tiêu**: máy sẵn sàng, hiểu quy trình, có 1 repo khởi tạo.
+Chi tiết vai trò từng món: xem file [04_tech_stack.md](04_tech_stack.md).
 
-- Đọc 9 file trong `guide-nguoi-moi/` (không cần thuộc, đọc để quen)
-- Cài VS Code + Claude Code + Git + Supabase account + Telegram bot token
-- Cài Superpowers plugin + Cline (multi-model)
-- Đăng ký MiniMax API key
-- Tạo folder `da-lieu-hoc-tap`, chạy `git init`
-- Gõ `/init` trong Claude Code để nó sinh CLAUDE.md mẫu
-- Sửa CLAUDE.md ngắn gọn: mục tiêu, tech stack, secret pattern
-
-**Kết quả cuối tuần**: repo có cấu trúc cơ bản, chạy `claude` mở được, sẵn sàng làm task đầu tiên.
-
-### Tuần 2 — Web PWA phase 1 (skeleton + auth + list)
-
-**Mục tiêu**: web hiển thị được, đăng nhập được, có 1 trang list card (dù chưa có card).
-
-Task chi tiết Claude sẽ giúp anh chia:
-
-- Sinh schema database — bảng flashcard, review_log, user_settings + RLS policy
-- Setup Vite project với React + shadcn/ui + Tailwind
-- Trang login (email + magic link)
-- Trang "Deck" list flashcard
-- Deploy Vercel → có URL `dalieu.vercel.app`
-- Cài vite-plugin-pwa → cài được vào home điện thoại
-
-**Kết quả cuối tuần**: web deploy được, đăng nhập từ điện thoại được, có 1 trang trống chờ có card.
-
-### Tuần 3 — Web soạn thẻ + ôn SRS + seed content thật
-
-**Mục tiêu**: có thể soạn thẻ, ôn thẻ, và có 50 thẻ thật từ 1 chương sách.
-
-Task chính:
-
-- Trang "Soạn thẻ" — form thêm/sửa, upload ảnh R2, tag ICD-10
-- Trang "Ôn (SRS)" — hiển thị thẻ due-first, 4 nút rating, implement thuật toán SM-2
-- Parse 1 chương sách CK1 (VD chương "Vảy nến" trong Trần Hậu Khang tập 2) → 50 flashcard bằng MiniMax (rẻ hơn Claude ~10× cho task extract)
-- Verify 50 card: chạy 4 check ở file 05 (quote literal, no placeholder, correct in options, image OK)
-- Seed 50 card vào Supabase
-
-**Kết quả cuối tuần**: web có đủ 3 tính năng core (list/soạn/ôn), 50 card thật verify xong.
-
-### Tuần 4 — Telegram bot integration
-
-**Mục tiêu**: bot chạy tự động 6h30 sáng, share DB với web.
-
-Task chính:
-
-- Viết Edge Function `send-morning-flashcards` (TypeScript/Deno)
-- Setup pg_cron schedule 6h30 giờ Việt Nam
-- Webhook handler cho callback rating (Nhớ/Khó/Quên) → cập nhật SRS state chung với web
-- Command `/quiz` — 5 câu MCQ ngẫu nhiên từ deck tuần trước
-- Test end-to-end: sáng nhận thẻ, bấm rating, mở web thấy DB đã cập nhật
-
-**Kết quả cuối tuần**: bot chạy tự động, cả bot + web đều update chung 1 database.
-
-### Tuần 5 — Analytics + polish
-
-**Mục tiêu**: hiểu được mình đang học ra sao, fix bug đã lộ ra sau 1 tuần dùng thật.
-
-- Trang Dashboard: streak, retention %, biểu đồ ôn theo tuần
-- Fix bug (thường có 3-5 bug lộ ra sau 1 tuần dùng thật)
-- Command `/stats` cho bot — báo cáo tuần
-
-### Tuần 6 — Content batch 2 + refactor
-
-**Mục tiêu**: mở rộng content, dọn code trước khi vào giai đoạn duy trì.
-
-- Parse thêm 2-3 chương sách (~150 card mới)
-- Refactor code trùng lặp (web + edge function share service layer)
-- Document lại architecture trong `docs/`
-
-**Sau 6 tuần**: có 1 hệ thống hoàn chỉnh — web PWA + Telegram bot + ~200 card verified. Từ tuần 7 → duy trì + thêm content dần theo lịch học.
+Chi phí tổng trong 2 tháng đầu: **400-800 nghìn**.
 
 ---
 
-## Không làm trong MVP (để giai đoạn sau)
+## Bước 5 — Lộ trình 2 tháng (mỗi tuần 2-3 giờ)
 
-Nghiêm cấm scope creep. Không thêm vào MVP:
+### Tuần 1 — Dựng nền + học lý thuyết
 
-- Share deck với đồng nghiệp (chỉ 1 user = anh) — bật sau 2 tháng khi ổn định
-- Chấm câu tự luận bằng AI — làm phase 2
-- Push notification web (Telegram bot đã làm rồi)
-- Import/export Anki .apkg — làm phase 3
-- Comment/discussion (social feature)
-- Multi-user permission chi tiết
+**Mục tiêu**: máy sẵn sàng, hiểu quy trình, có 1 kho code khởi tạo.
 
-**Vì sao?** Mỗi feature thêm = 1-2 tuần code + 1 tháng maintain. Kỳ thi CK1 không đợi. Ưu tiên "chạy được + học được" hơn "đầy đủ tính năng".
+- Đọc 10 file trong `guide-nguoi-moi/` (không cần thuộc, đọc để quen)
+- Cài Claude Code + Git + đăng ký các tài khoản cần thiết (miễn phí)
+- Cài Superpowers (miễn phí, một lệnh)
+- Đăng ký MiniMax lấy khoá dùng AI rẻ
+- Tạo thư mục dự án tên `da-lieu-hoc-tap`
+- Gõ `/init` trong Claude Code để nó sinh file hồ sơ dự án mẫu
+
+**Kết quả cuối tuần**: thư mục dự án có cấu trúc cơ bản, mở Claude Code chạy được.
+
+### Tuần 2 — Dựng trang web phần 1 (khung + đăng nhập)
+
+**Mục tiêu**: trang web hiển thị được, đăng nhập được, có 1 trang trống chờ thẻ.
+
+- Gõ `/speckit.specify` mô tả chức năng "Khung web + đăng nhập + trang danh sách thẻ"
+- Claude sinh kế hoạch + hỏi làm rõ, anh trả lời
+- Gõ `/speckit.implement` — Claude làm từng phần, dừng để anh xem
+- Đưa lên mạng (miễn phí) → có địa chỉ web `dalieu-xxx.xxx`
+- Cài vào điện thoại, thử đăng nhập
+
+**Kết quả cuối tuần**: web mở được trên điện thoại, đăng nhập được, có 1 trang trống chờ nội dung.
+
+### Tuần 3 — Trang soạn thẻ + trang ôn tập + nội dung đầu tiên
+
+**Mục tiêu**: có thể soạn thẻ, ôn thẻ, có 50 thẻ thật từ 1 chương sách.
+
+- Trang "Soạn thẻ" — biểu mẫu thêm/sửa, tải ảnh lên
+- Trang "Ôn tập" — hiển thị thẻ ưu tiên, 4 nút bấm
+- Nhờ MiniMax đọc 1 chương sách (ví dụ chương "Vảy nến") → 50 thẻ nháp
+- Duyệt 50 thẻ: kiểm tra đáp án khớp sách, gắn nhãn bệnh, lưu
+
+**Kết quả cuối tuần**: web đủ 3 chức năng chính (danh sách/soạn/ôn), 50 thẻ thật.
+
+### Tuần 4 — Bot Telegram tích hợp
+
+**Mục tiêu**: bot chạy tự động 6h30 sáng, dùng chung dữ liệu với web.
+
+- Viết chức năng "Gửi thẻ ôn sáng" cho phòng xử lý
+- Đặt lịch tự động 6h30 giờ Việt Nam
+- Xử lý nút bấm rating từ Telegram → cập nhật trạng thái
+- Thêm lệnh `/quiz` — 5 câu trắc nghiệm ngẫu nhiên
+- Chạy thử: sáng nhận thẻ, bấm rating, mở web thấy dữ liệu đã cập nhật
+
+**Kết quả cuối tuần**: cả bot + web đều cập nhật chung 1 kho dữ liệu.
+
+### Tuần 5 — Bảng theo dõi + hoàn thiện
+
+**Mục tiêu**: hiểu được mình đang học ra sao, sửa lỗi lộ ra sau 1 tuần dùng thật.
+
+- Trang bảng theo dõi: chuỗi ngày, % nhớ, biểu đồ ôn theo tuần
+- Sửa lỗi (thường có 3-5 lỗi lộ sau 1 tuần dùng thật)
+- Thêm lệnh `/stats` cho bot — báo cáo tuần
+
+### Tuần 6 — Thêm nội dung + kịch bản dùng đủ
+
+**Mục tiêu**: mở rộng nội dung, chuẩn bị vào giai đoạn duy trì.
+
+- Nhờ AI đọc thêm 2-3 chương sách (~150 thẻ mới)
+- Duyệt và đưa vào kho
+- Thử đủ 5 kịch bản (sáng ôn, trưa quiz, đêm trực xem ảnh, tối soạn, chủ nhật báo cáo)
+
+### Tuần 7-8 — Duy trì và dùng thật
+
+**Mục tiêu**: dùng đủ 2 tuần liên tục để đánh giá xem có phù hợp không.
+
+- Không thêm chức năng lớn
+- Chỉ dùng, sửa lỗi nhỏ khi thấy
+- Cuối tuần 8: đánh giá — có duy trì lâu dài không? Cần thêm/bỏ gì?
+
+**Sau 2 tháng**: có 1 hệ thống hoàn chỉnh — web + bot + khoảng 500-800 thẻ đã kiểm tra. Từ tháng 3 trở đi → duy trì + thêm nội dung dần theo lịch học.
+
+---
+
+## Bước 6 — Kịch bản giả lập cho 5 tình huống thường gặp
+
+### Kịch bản A — "Sáng dậy trực"
+
+**5h30**: chuông báo thức. Anh dậy chuẩn bị.
+
+**6h00**: đứng bếp uống cà phê. Điện thoại kêu — bot đã gửi 5 thẻ.
+
+**6h05-6h10**: bấm chọn từng thẻ, mỗi thẻ 30 giây. Trong đó có 1 thẻ khó, bấm "Chưa nhớ" → thẻ đó sẽ quay lại sau 15 phút.
+
+**6h20**: bot gửi lại 1 thẻ đó. Bấm "Khó" → sẽ quay lại sau 1 ngày.
+
+**6h30**: đi trực.
+
+**Kết quả**: 5 phút biến thành 5 thẻ ôn có ý nghĩa.
+
+### Kịch bản B — "Trưa giữa hai ca khám"
+
+**12h30**: xong ca khám sáng, ngồi nghỉ ở phòng nội trú.
+
+**12h32**: gõ `/quiz` vào bot. Bot gửi 5 câu trắc nghiệm.
+
+**12h35**: xong quiz. Điểm: 4/5. Bot gửi giải thích câu sai.
+
+**12h40**: đi ăn trưa.
+
+**Kết quả**: 10 phút biến thành 5 lần "chấm" — active recall mạnh nhất.
+
+### Kịch bản C — "Đêm trực, gặp ca hiếm"
+
+**23h**: nhận 1 bệnh nhân ban đỏ đa hình mặt. Chưa rõ chẩn đoán.
+
+**23h05**: mở trang web trên điện thoại. Nhờ mạng chập chờn, chuyển sang chế độ offline — vẫn xem được ảnh atlas đã tải sẵn.
+
+**23h10**: so ảnh atlas → khả năng là hồng ban đa dạng. Tra thêm sách.
+
+**23h30**: chẩn đoán tạm. Ghi ca vào ứng dụng: tình huống, chẩn đoán, cách xử trí.
+
+**Sau đó**: sáng hôm sau khi có mạng, ứng dụng tự đồng bộ. Trong tuần sau, bot tự đưa ca này vào quiz để anh nhớ.
+
+**Kết quả**: ca hiếm không bị lãng quên.
+
+### Kịch bản D — "Tối cuối tuần soạn thẻ"
+
+**Chủ nhật 20h**: rảnh, mở máy tính.
+
+**20h15**: mở trang web, vào "Soạn thẻ". Chọn chương "Viêm da tiếp xúc" trong sách CK1.
+
+**20h20**: nhờ AI đọc chương (dùng MiniMax cho rẻ) → sinh 30 thẻ nháp.
+
+**20h30-21h30**: duyệt từng thẻ. 25 thẻ đúng, 5 thẻ AI bịa → xoá. Còn 25 thẻ, gắn nhãn bệnh + độ khó, lưu.
+
+**Kết quả**: 1,5 giờ có 25 thẻ mới. Sáng mai sẽ vào lịch ôn.
+
+### Kịch bản E — "Chủ nhật xem báo cáo tuần"
+
+**Chủ nhật 21h30**: bot tự gửi tin: "Tuần này bạn ôn 250 thẻ, nhớ 78%, chuỗi 12 ngày. Nhóm bệnh yếu nhất: Vảy nến (62%)."
+
+**21h35**: mở web xem bảng chi tiết. Thấy 8 thẻ vảy nến hay quên. Ghi chú: tuần tới đọc lại chương Vảy nến.
+
+**Kết quả**: biết đường tự điều chỉnh, không học lan man.
+
+---
+
+## Không làm trong 2 tháng đầu
+
+Nghiêm cấm mở rộng phạm vi. Không thêm vào giai đoạn đầu:
+
+- Chia sẻ deck với đồng nghiệp (chỉ 1 người dùng = anh) — làm sau khi ổn định
+- Chấm câu tự luận bằng AI — làm giai đoạn sau
+- Thông báo đẩy trên web (Telegram bot đã làm rồi)
+- Nhập / xuất Anki .apkg — làm giai đoạn 3
+- Bình luận / thảo luận (chức năng xã hội)
+- Phân quyền nhiều user chi tiết
+
+**Vì sao?** Mỗi chức năng thêm = 1-2 tuần code + 1 tháng bảo trì. Kỳ thi chuyên khoa không đợi. Ưu tiên "chạy được + học được" hơn "đầy đủ chức năng".
 
 ---
 
 ## Chuyên khoa 1 Da liễu Hà Nội — thông tin thực tế
 
-**Cảnh báo**: các thông tin dưới đây có phần **chưa xác thực** — trường không public đủ chi tiết. Anh cần confirm với phòng đào tạo SĐH trước khi quyết định.
+**Cảnh báo**: các thông tin dưới đây có phần **chưa xác thực** — trường không công khai đủ chi tiết. Anh cần xác nhận trực tiếp với phòng đào tạo sau đại học trước khi quyết định.
 
-### Đại học Y Hà Nội (HMU)
+### Đại học Y Hà Nội
 
-- Website SĐH: `sdh.hmu.edu.vn` — có mục "Bác sĩ CK I"
-- Tuyển sinh 2025 (tham khảo, năm sau có thể đổi): phát hành hồ sơ tháng 4-5, đăng ký online tháng 5, nộp hồ sơ giấy giữa tháng 5
+- Website sau đại học: `sdh.hmu.edu.vn` — có mục "Bác sĩ CK I"
+- Tuyển sinh 2025 (tham khảo): phát hành hồ sơ tháng 4-5, đăng ký online tháng 5
 - Địa chỉ: số 1 Tôn Thất Tùng, Đống Đa, Hà Nội (Phòng 325)
 - Email: `sdhhotline@hmu.edu.vn`
-- **CẦN CONFIRM trực tiếp**: chuyên ngành CK1 có Da liễu không / thời gian đào tạo / học phí / môn thi đầu vào
+- **CẦN XÁC NHẬN**: chuyên ngành có Da liễu không / thời gian đào tạo / học phí / môn thi
 
-### Học viện Quân y (VMMU)
+### Học viện Quân y
 
-- Có đào tạo CK1 hệ dân sự
+- Có đào tạo chuyên khoa 1 hệ dân sự
 - Với Da liễu: cần xác nhận từ giám đốc bệnh viện nơi công tác
-- **CẦN CONFIRM**: website `vmmu.edu.vn` có mở CK1 Da liễu thường xuyên không
+- **CẦN XÁC NHẬN**: website `vmmu.edu.vn` có mở chuyên khoa 1 Da liễu thường xuyên không
 
 ### Bệnh viện Da liễu Trung ương (15A Phương Mai)
 
-- **Không cấp bằng CK1** — chỉ là cơ sở thực hành, phối hợp với HMU/ĐHQGHN
+- **Không cấp bằng chuyên khoa 1** — chỉ là cơ sở thực hành
 - Có đào tạo thực hành 18 tháng có giấy xác nhận
-- Có đào tạo liên tục (CME)
-- Website: `dalieu.vn` — mục Phòng Đào tạo
+- Có đào tạo liên tục
+- Website: `dalieu.vn`
 
 ---
 
-## Anti-pattern cần tránh
+## Sai lầm cần tránh
 
-### 1. Cầu toàn feature trước khi có 1 user thật
+### 1. Cầu toàn chức năng trước khi có 1 người dùng thật
 
-Đừng làm 10 feature "có vẻ hay" trước khi chính anh dùng bot 1 tuần. Cứ MVP → dùng thật 2 tuần → thêm feature theo pain point thực tế.
+Đừng làm 10 chức năng "có vẻ hay" trước khi chính anh dùng bot 1 tuần. Cứ làm bản đầu → dùng thật 2 tuần → thêm chức năng theo nhu cầu thực tế.
 
-### 2. AI-generated content không nguồn
+### 2. Nội dung do AI tự sinh, không nguồn
 
-Đừng nhờ Claude "viết 100 câu hỏi da liễu". Có thể sai fact, bịa liều thuốc. Luôn parse từ sách có key. Chi tiết ở file 05.
+Đừng nhờ AI "viết 100 câu hỏi da liễu". Có thể sai fact, bịa liều thuốc. Luôn cho AI đọc sách có sẵn đáp án. Chi tiết ở file 05.
 
-### 3. Content pipeline không backup
+### 3. Không sao lưu trước khi thay đổi lớn
 
-Trước khi sync → luôn tạo `.bak`. Xoá 100 card sai chỉ mất 1 lệnh, restore lại mất 1 tuần.
+Trước khi đưa hàng loạt thẻ mới vào → luôn tạo bản sao lưu. Xoá 100 thẻ sai chỉ mất 1 lệnh, khôi phục lại mất 1 tuần.
 
-### 4. Commit `.env` lên GitHub
+### 4. Đưa mật khẩu vào code
 
-Rotate token ngay nếu lỡ. Chi tiết file 06.
+Rotate ngay nếu lỡ đưa lên GitHub. Chi tiết file 06.
 
-### 5. Không dùng RLS
+### 5. Không dùng khoá bảo mật cho kho hồ sơ
 
-Table Supabase không bật RLS = ai biết URL project là đọc được. Luôn bật + write policy.
+Không bật khoá bảo mật = ai biết địa chỉ kho hồ sơ là đọc được. Luôn bật + viết quy tắc phân quyền.
 
-### 6. Skip verification trước "done"
+### 6. Bỏ qua kiểm tra trước khi nói "xong"
 
-Học từ Superpowers `verification-before-completion`: chưa chạy verify command trong chính message này thì không được nói "done".
+Chưa chạy kiểm tra trong chính buổi đó thì không được nói "xong". (Đây là quy tắc thép của Superpowers.)
 
-### 7. Kitchen-sink CLAUDE.md
+### 7. File hồ sơ dự án quá dài
 
-Đừng viết CLAUDE.md 500 dòng. Claude sẽ ignore. Giữ dưới 200 dòng, chỉ include thứ Claude không tự đoán được từ code.
-
----
-
-## Workflow 1 ngày điển hình (khi đã setup xong)
-
-**Sáng 6h30** (tự động): Bot gửi 5 thẻ vào Telegram → anh mở điện thoại ăn sáng → bấm rating.
-
-**7h30 vào bệnh viện**: Nếu trực đêm trước, mở web PWA (offline cache) xem case lâm sàng gặp đêm qua.
-
-**Trưa 12h30** (5-10 phút): Mở laptop, chạy Claude Code, gõ:
-
-> Task hôm nay: thêm 10 flashcard từ chương "Viêm da cơ địa" sách Trần Hậu Khang tập 2 trang 45-60.
-
-Claude sinh spec + hỏi clarify (VD "có tag ICD L20 không?"). Anh trả lời, sau ~30 phút có 10 card mới trong DB, verified.
-
-**Tối 20h** (10 phút): Bấm `/stats` xem tiến độ. Nếu weekend, làm quiz `/quiz`.
-
-**Chủ nhật** (1-2 giờ): Session dài hơn — refactor, thêm feature mới, plan tuần tới.
+Đừng viết file `CLAUDE.md` 500 dòng. AI sẽ bỏ qua. Giữ dưới 200 dòng, chỉ ghi những gì AI không tự đọc từ code được.
 
 ---
 
-## Khi gặp bế tắc
+## Ngày làm việc điển hình (khi đã ổn định sau 6 tuần)
 
-Bế tắc là bình thường trong tháng đầu. 4 nguồn hỗ trợ:
+**Sáng 6h30** (tự động): Bot gửi 5 thẻ vào Telegram → anh mở điện thoại uống cà phê → bấm rating.
+
+**7h30 vào bệnh viện**: Nếu trực đêm trước, mở trang web (offline cache) xem lại case gặp đêm qua.
+
+**Trưa 12h30** (5-10 phút): Nếu có 5 phút rảnh, gõ `/quiz` làm 5 câu.
+
+**Chiều tối 20h** (10 phút): Bấm `/stats` xem tiến độ. Nếu weekend, làm quiz dài hơn.
+
+**Chủ nhật** (1-2 giờ): Session dài hơn — thêm thẻ mới, đọc lại chương yếu, plan tuần tới.
+
+---
+
+## Khi bí không biết làm gì
+
+Bí là bình thường trong tháng đầu. 4 nguồn hỗ trợ:
 
 1. **Đọc lại file 01-06** trong `guide-nguoi-moi/` — thường quên khái niệm cơ bản
-2. **Đọc [research-notes.md](research-notes.md)** — 4 nhóm research chi tiết có URL nguồn gốc
-3. **Reddit r/ClaudeAI + r/medicalschoolanki** — community lớn, câu hỏi tiếng Anh
-4. **Reddit r/vibecoding + r/LocalLLaMA** — thảo luận multi-model workflow
+2. **Đọc [research-notes.md](research-notes.md)** — nghiên cứu chi tiết + URL nguồn
+3. **Reddit r/ClaudeAI + r/medicalschoolanki** — cộng đồng lớn, câu hỏi tiếng Anh
+4. **Nhờ Claude Code**: chỉ cần nói "tôi bí ở chỗ X" — nó sẽ hỏi làm rõ + giải thích
 
 ---
 
-## Checklist "sẵn sàng kickoff"
+## Bảng kiểm tra "sẵn sàng khởi động"
 
-Trước khi tạo folder project đầu tiên:
+Trước khi tạo thư mục dự án đầu tiên:
 
+- [ ] Đã đọc [KET_QUA_DU_AN.md](KET_QUA_DU_AN.md) và thấy giá trị đủ mạnh
 - [ ] Đã đọc file 01, 02, 03 (khái niệm cơ bản + workflow + setup)
-- [ ] Máy đã cài Claude Code, VS Code, Git, Supabase CLI (nếu cần)
-- [ ] Có tài khoản: GitHub, Anthropic (nạp $10), Supabase, MiniMax, Telegram bot
-- [ ] Bot Telegram đã gửi thử được "Xin chào" (test 1 tin manual)
-- [ ] Đã chọn 1-2 bài toán cụ thể (VD combo A+B: thời gian + hình ảnh)
-- [ ] Đã có 1 chương sách CK1 để làm nguồn content (VD chương "Vảy nến")
-- [ ] Đặt tên project: `da-lieu-hoc-tap` (hoặc anh chọn tên khác)
-- [ ] Timebox: cam kết 2-3 giờ/tuần trong 6 tuần tới
+- [ ] Máy đã cài Claude Code, VS Code, Git
+- [ ] Có tài khoản: GitHub, Anthropic (nạp 200 nghìn), kho hồ sơ, MiniMax, Telegram bot
+- [ ] Bot Telegram đã gửi thử được "Xin chào" (test 1 tin thủ công)
+- [ ] Đã chọn 1-2 vấn đề cụ thể (ví dụ: thời gian + hình ảnh)
+- [ ] Đã có 1 chương sách CK1 để làm nội dung đầu tiên (ví dụ chương "Vảy nến")
+- [ ] Đặt tên dự án: `da-lieu-hoc-tap` (hoặc anh chọn tên khác)
+- [ ] Cam kết được 2-3 giờ mỗi tuần trong 2 tháng tới
 
-Nếu ≥ 6/8 tick → kickoff. Chưa đủ → hoàn thiện trước, không vội.
+Nếu ≥ 7/9 tick → khởi động. Chưa đủ → hoàn thiện trước, không vội.
 
 ---
 
 ## Nếu anh chỉ nhớ được 3 điều
 
-1. **MVP tuần 2-4** — có sản phẩm chạy được (dù chỉ 50 card) là mốc quan trọng nhất
-2. **Correct-by-construction** cho content — không để AI chế đáp án y khoa
-3. **6 tuần đủ cho MVP** — sau đó là duy trì, không cần feature mới ồ ạt
+1. **Mục tiêu 2 tháng** — có sản phẩm chạy được với 500-800 thẻ, không cần chức năng đầy đủ
+2. **Correct-by-construction** cho nội dung — không để AI chế đáp án y khoa
+3. **6 tuần setup + 2 tuần dùng thử** — sau đó đánh giá xem có duy trì lâu dài không
 
 ## Đọc tiếp
 
-- Nếu chưa rõ multi-model setup: [09_multi_model_workflow.md](09_multi_model_workflow.md)
+- Nếu chưa rõ đa AI setup: [09_multi_model_workflow.md](09_multi_model_workflow.md)
 - Nếu cần URL nguồn cụ thể: [08_tai_lieu_tham_khao.md](08_tai_lieu_tham_khao.md)

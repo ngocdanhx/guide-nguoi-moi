@@ -1,286 +1,254 @@
-# 09 — Dùng nhiều AI cùng lúc (Claude + MiniMax + local)
+# 09 — Dùng nhiều AI cùng lúc (rẻ hơn 40-60%)
 
-> Không có 1 model AI nào tốt nhất cho mọi việc. Biết phân task cho đúng model giúp anh **giảm 40-60% chi phí** mà vẫn giữ chất lượng cao.
+> Không có 1 AI nào tốt nhất cho mọi việc. Biết chia việc cho đúng AI giúp anh **giảm 40-60% chi phí** mà chất lượng vẫn giữ.
 
-## Vấn đề: Claude cho mọi việc = tốn tiền
+## Vấn đề: Dùng 1 AI xịn cho mọi việc = tốn tiền
 
-Claude Sonnet mạnh, thông minh, hiểu context tốt. Nhưng đắt.
+**Claude Sonnet** (AI của Anthropic) rất mạnh, hiểu bối cảnh tốt. Nhưng đắt.
 
-Cùng 1 task "dịch 200 câu explanation tiếng Anh sang tiếng Việt":
-- Claude Sonnet: ~$1
-- MiniMax highspeed: ~$0.15 (rẻ hơn 6×)
-- Chất lượng thực tế: gần bằng nhau cho task dịch đơn giản
+Cùng một việc "dịch 200 câu tiếng Anh y khoa sang tiếng Việt":
+- Dùng Claude Sonnet: khoảng 25 nghìn đồng
+- Dùng MiniMax (AI của Trung Quốc): khoảng 4 nghìn đồng — rẻ hơn 6 lần
+- Chất lượng thực tế: gần bằng nhau cho việc dịch đơn giản
 
-Nếu anh chỉ dùng Claude cho tất cả, sau 1 năm học CK1: ~$200. Multi-model: ~$60-80. **Chênh $120-140/năm = 3-4 triệu VND**.
+Nếu chỉ dùng Claude cho tất cả, sau 2 tháng: khoảng 800 nghìn - 1,2 triệu. Nếu chia đúng: chỉ 400-600 nghìn. **Tiết kiệm 400-600 nghìn cho 2 tháng đầu.**
 
-Chưa kể có task nhạy cảm dữ liệu (VD note case bệnh nhân) — không muốn gửi lên cloud → cần model chạy local.
+Chưa kể có việc nhạy cảm dữ liệu (ví dụ ghi chú ca bệnh) — không muốn gửi lên mạng → cần AI chạy trên máy anh.
 
 ---
 
-## Nguyên tắc phân task cho model
+## Nguyên tắc chia việc cho AI
 
-Bức tranh phân loại đơn giản:
+Chia thành 3 nhóm việc, mỗi nhóm 1 loại AI:
 
-### Việc "khó" — phải Claude làm
+### Việc "khó" — dùng Claude
 
-- Kiến trúc/thiết kế (VD "nên tách bảng thành 2 bảng không?")
-- Refactor code phức tạp (> 200 dòng, nhiều dependency)
-- Debug bug khó (đã thử fix 2 lần chưa xong)
-- Review code trước commit
-- Viết CLAUDE.md, spec, plan lớn
-- Bất kỳ task cần **reasoning nhiều bước**
+Cần suy nghĩ nhiều bước, có bối cảnh phức tạp:
 
-Model chọn: **Claude Sonnet** cho hầu hết. **Claude Opus** khi cần suy nghĩ sâu (1 tuần vài lần thôi vì đắt).
+- Thiết kế cấu trúc dự án (ví dụ "nên tách bảng thành 2 bảng không?")
+- Sửa lỗi khó (đã thử 2 lần chưa xong)
+- Viết chỉ định lớn, kế hoạch phức tạp
+- Xem lại code trước khi hoàn tất
 
-### Việc "vừa" — MiniMax hoặc Gemini Flash
+**Chi phí**: 200-500 nghìn/tháng cho dùng cá nhân.
 
-- Extract text từ PDF/scan thành JSON
+### Việc "vừa" — dùng MiniMax (hoặc Gemini Flash)
+
+Đơn giản hơn, không cần suy nghĩ nhiều bước:
+
+- Nhờ AI đọc PDF, chuyển thành thẻ ôn
 - Dịch tiếng Anh y khoa ↔ tiếng Việt
-- Format lại text (normalize whitespace, escape quote)
-- Generate boilerplate code (form CRUD, migration SQL đơn giản)
-- Explain code từng dòng (task giáo dục, không cần deep reasoning)
-- Tag tự động (VD "đọc câu hỏi này thuộc bệnh nào?")
-- Summarize log/error message
-- Chấm câu trả lời tự luận (comparative)
+- Định dạng lại text
+- Sinh code khung mẫu (biểu mẫu thêm/sửa đơn giản)
+- Giải thích code từng dòng
+- Gắn nhãn tự động ("câu hỏi này thuộc bệnh nào?")
+- Tóm tắt log lỗi
 
-Model chọn: **MiniMax M2.7 highspeed** (rẻ nhất) hoặc **Gemini Flash**.
+**Chi phí**: 50-150 nghìn/tháng.
 
-### Việc "đơn giản" — local model (Ollama)
+### Việc "đơn giản" — dùng AI chạy trên máy (miễn phí)
 
-- Format JSON đơn giản
-- Task lặp đi lặp lại (batch process 1000 file)
-- Task nhạy cảm dữ liệu (không muốn gửi cloud)
-- Khi trực đêm không có wifi tốt
-- Prototype nhanh không muốn tốn tiền
+Rất đơn giản, lặp đi lặp lại, hoặc cần offline:
 
-Model chọn: **Qwen2.5-coder 7b** hoặc **Llama 3.2 3b** qua Ollama.
+- Định dạng JSON đơn giản
+- Xử lý hàng loạt (batch 1000 tệp)
+- Việc nhạy cảm dữ liệu không gửi lên mạng
+- Trực đêm không có mạng
+- Thử nhanh không muốn tốn tiền
+
+**Chi phí**: 0 (chỉ tốn điện + máy có sẵn của anh).
 
 ---
 
 ## MiniMax là gì (giới thiệu nhanh)
 
-**MiniMax** là công ty AI Trung Quốc (Shanghai). Họ có các model:
-- **MiniMax-M3** — mạnh nhất, context 1 triệu token, đa phương thức (text + ảnh)
-- **MiniMax-M2.7** — cân bằng
-- **MiniMax-M2.7-highspeed** — rẻ nhất, nhanh nhất
+**MiniMax** là công ty AI Trung Quốc (Thượng Hải). Có nhiều loại AI, trong đó:
+- **MiniMax M3** — mạnh nhất, hiểu ngữ cảnh dài, dùng cho việc phức tạp
+- **MiniMax M2.7 highspeed** — rẻ nhất, nhanh nhất, dùng cho việc đơn giản
 
-**Điểm hay nhất cho anh**: MiniMax có **Anthropic-compatible API** — nghĩa là Claude Code có thể chạy MiniMax model **chỉ bằng cách đổi environment variable**, không cần code lại workflow gì.
+**Điểm hay nhất cho anh**: MiniMax nói chuyện được với Claude Code bằng cùng "ngôn ngữ" như AI thật của Anthropic. Nghĩa là anh có thể dùng Claude Code chạy MiniMax **chỉ bằng cách đổi 1 khoá**, không cần học công cụ mới.
 
-Nghĩa là:
-- Sáng anh gõ `claude` → dùng Claude Sonnet (task chính)
-- Chiều anh gõ `claude-mini` (alias tự đặt) → cùng Claude Code nhưng backend là MiniMax
-- Trải nghiệm giống hệt nhau, chỉ khác cost
-
----
-
-## Setup MiniMax với Claude Code
-
-**Bước 1**: đăng ký `platform.minimax.io`, tạo API key.
-
-**Bước 2**: test API bằng 1 lệnh curl đơn giản (Claude Code hướng dẫn từng bước khi anh cần).
-
-**Bước 3**: setup 2 alias trong file `.zshrc` hoặc `.bashrc`:
-- `claude-real` — dùng Claude thật (Anthropic API)
-- `claude-mini` — dùng MiniMax API backend
-
-Sau đó anh có 2 lệnh:
-- Task chính → gõ `claude-real`
-- Task rẻ → gõ `claude-mini`
-
-Đơn giản vậy thôi.
+Cụ thể:
+- Sáng anh gõ `claude` → dùng AI Claude (cho việc chính)
+- Chiều anh gõ `claude-mini` (một cái tên tắt anh đặt) → cùng Claude Code nhưng bên trong là MiniMax
+- Trải nghiệm giống hệt nhau, chỉ khác chi phí
 
 ---
 
-## Cline — VS Code extension đa provider
+## Kịch bản chia việc cho từng ngày
 
-Ngoài Claude Code, anh nên cài thêm **Cline** (extension VS Code).
+### Kịch bản A — Tuần bận (đang trực nhiều)
 
-**Cline khác Claude Code ra sao?**
-- Claude Code: terminal-first, có nhiều skill, hook, MCP mạnh
-- Cline: panel bên VS Code, dropdown chọn model dễ, switch nhanh giữa nhiều provider
+- **Buổi sáng có thời gian**: dùng `claude` (AI xịn) sửa lỗi trên web
+- **Trực đêm bí ý tưởng**: dùng AI trên máy để tra syntax, không mất data lên mạng
 
-**Khi nào dùng Cline thay Claude Code?**
+### Kịch bản B — Cuối tuần soạn nội dung hàng loạt
 
-| Tình huống | Dùng |
-|---|---|
-| Task chính, cần full workflow, skill, MCP | Claude Code |
-| Muốn switch nhanh giữa nhiều model để so sánh | Cline |
-| Task đơn lẻ trong VS Code, không cần setup nhiều | Cline |
-| Debug bug, cần thấy diff trực quan trong VS Code | Cả 2 đều được |
+- **Sáng thứ 7**: dùng `claude-mini` (rẻ) đọc 3 chương sách → 150 thẻ nháp
+- **Trưa thứ 7**: dùng `claude` (xịn) duyệt 20 thẻ ngẫu nhiên, kiểm tra chất lượng
+- Nếu tỷ lệ sai > 10% → chuyển sang `claude` cho phần còn lại
+- **Chiều thứ 7**: duyệt thẻ đã kiểm tra, gắn nhãn, lưu
 
-Anh có thể lưu **nhiều profile** trong Cline:
-- Profile "Claude Sonnet" — Anthropic thật
-- Profile "MiniMax M3" — MiniMax API
-- Profile "Gemini Flash" — Google
-- Profile "Qwen local" — Ollama
+### Kịch bản C — Sửa lỗi phức tạp
 
-Click 1 nút là switch. Rất tiện khi anh muốn so sánh cùng 1 prompt trên 3 model xem model nào cho kết quả tốt nhất.
+- **Bước 1**: dùng `claude` với quy tắc "tìm nguyên nhân gốc" — hiểu vấn đề
+- **Bước 2**: hiểu rồi thì dùng `claude-mini` viết sửa (việc đơn giản)
 
----
+### Kịch bản D — Trước ngày thi 1 tuần
 
-## Continue.dev — alternative của Cline
-
-Continue.dev là VS Code extension khác, mạnh về **support model local (Ollama)** và có **tab autocomplete** (như GitHub Copilot).
-
-Nếu anh muốn:
-- Autocomplete inline khi gõ code → Continue.dev
-- Dùng chủ yếu local model để tiết kiệm → Continue.dev
-
-Nếu anh muốn:
-- Agent mode mạnh (Cline có mode "act" tự động chạy nhiều bước) → Cline
-
-**Có thể cài cả 2 song song** — không xung đột. Em recommend cài Cline trước.
+- Dùng MiniMax hoặc Gemini Flash chấm 500 câu trả lời tự luận
+- Chi phí thấp — không cần suy nghĩ phức tạp
 
 ---
 
-## Ollama — chạy AI local miễn phí
+## Bảng giá tham khảo (đơn vị: đồng cho 1 triệu chữ)
 
-**Ollama** cho phép chạy model AI open-source (Llama, Qwen, Gemma) trên máy anh — **không cần internet, không tốn tiền**.
+Không cần nhớ chính xác. Chỉ cần biết **thứ tự đắt-rẻ**:
+
+| AI | Đầu vào | Đầu ra | Dùng khi nào |
+|---|---|---|---|
+| Claude Opus | ~350k | ~1,7 triệu | Suy nghĩ cực sâu (hiếm dùng) |
+| Claude Sonnet | ~70k | ~350k | Việc chính, cần chất lượng |
+| Claude Haiku | ~18k | ~90k | Việc nhanh, đơn giản |
+| Gemini Pro | ~28k | ~230k | Nhiều ngữ cảnh |
+| Gemini Flash | ~7k | ~55k | Rẻ + đủ dùng |
+| MiniMax M3 | ~9k | ~35k | Nhiều ngôn ngữ |
+| MiniMax M2.7 highspeed | ~5k | ~18k | Rẻ nhất, đơn giản |
+| AI trên máy (Ollama) | 0 | 0 | Miễn phí, offline |
+
+**Ước lượng dự án cá nhân 2 tháng**:
+- Việc lớn (thiết kế, xem code): ~100 việc x 30k chữ = 3 triệu chữ
+- Việc vừa (đọc sách, dịch, gắn nhãn): ~200 việc x 5k chữ = 1 triệu chữ
+- Chỉ Claude: khoảng 800 nghìn - 1,2 triệu
+- Chia đúng (Claude + MiniMax): khoảng 400-600 nghìn
+
+**Tiết kiệm khoảng nửa.**
+
+---
+
+## Cách setup (không đi vào chi tiết command)
+
+Không nói câu lệnh cụ thể. Khi anh cần cài, gõ vào Claude Code: **"hướng dẫn tôi setup MiniMax để chạy song song với Claude"** — Claude sẽ chỉ từng bước.
+
+Ý chính:
+1. Đăng ký tài khoản MiniMax (miễn phí), tạo khoá dùng API
+2. Nạp trước 100-200 nghìn để chạy thử
+3. Cấu hình 2 tên tắt: `claude` (thật) và `claude-mini` (MiniMax)
+4. Từ đó anh tự chọn tên nào cho việc gì
+
+Cài xong mất 10-15 phút.
+
+---
+
+## Công cụ hỗ trợ đa AI
+
+Ngoài Claude Code, có 2 công cụ hữu ích cài thêm trong VS Code:
+
+### Cline (miễn phí)
+
+Một bộ cài thêm cho VS Code, hỗ trợ nhiều loại AI (Claude, MiniMax, Gemini, GPT). Có nút dropdown chọn AI nào cho việc nào.
+
+**Khi nào dùng Cline thay Claude Code**:
+- Muốn so sánh nhanh cùng 1 câu hỏi với 3 AI khác nhau
+- Việc đơn lẻ, không cần workflow phức tạp
+
+### Continue.dev (miễn phí)
+
+Tương tự Cline nhưng mạnh về **AI chạy trên máy**. Có gợi ý tự động khi anh gõ code (như Copilot).
+
+**Khi nào dùng**:
+- Muốn có gợi ý tự động khi gõ
+- Chủ yếu dùng AI trên máy để tiết kiệm
+
+**Có thể cài cả 2** — không xung đột. Em khuyên cài **Cline** trước.
+
+---
+
+## Ollama — AI chạy trên máy miễn phí
+
+**Ollama** là công cụ cho phép chạy AI trên máy anh, không cần mạng, không tốn tiền.
 
 **Yêu cầu máy**:
-- RAM ≥ 16GB cho model 7 tỷ tham số (mạnh nhất trong tầm này)
-- RAM 8GB dùng model 3 tỷ nhẹ hơn
-- Không cần GPU (chạy CPU cũng được, chỉ chậm hơn)
+- RAM ≥ 16GB → chạy được AI 7 tỷ tham số (mạnh nhất trong tầm này)
+- RAM 8GB → chỉ chạy được AI 3 tỷ nhẹ hơn
+- Không cần card đồ hoạ (chạy CPU cũng được, chỉ chậm hơn)
 
-**Model recommend cho coding**:
-- **Qwen2.5-coder 7b** — mạnh nhất cho code, ~4GB
-- **Llama 3.2 3b** — nhẹ hơn, ~2GB
-- **Gemma 2 2b** — nhẹ nhất, ~1.5GB
+**Chất lượng so với Claude**:
+- Yếu hơn Claude Sonnet khoảng 50-70%
+- Không dùng cho việc quan trọng
+- Chỉ dùng cho: định dạng, dịch câu ngắn, xử lý hàng loạt, khi offline
 
-**Chất lượng vs Claude**: model local yếu hơn Claude Sonnet khoảng 50-70%. Không dùng cho task quan trọng, chỉ dùng cho:
-- Format text
-- Dịch câu ngắn
-- Task lặp đi lặp lại (batch)
-- Khi offline
-
-**Wire vào workflow**: Continue.dev có support Ollama built-in. Cline cũng support qua config.
+**Chi phí**: 0.
 
 ---
 
-## Chiến lược thực tế cho dự án da liễu
+## Kịch bản cụ thể để tiết kiệm
 
-### Kịch bản 1 — Tuần bận (đang trực nhiều)
+Áp dụng cho tuần soạn nội dung điển hình:
 
-- **Claude Code** cho fix bug nhanh, review code
-- **Ollama local** cho tra syntax, format JSON — không mất data lên cloud khi wifi bệnh viện không tin cậy
+**Việc**: Đọc 5 chương sách CK1, sinh 300 thẻ ôn.
 
-### Kịch bản 2 — Weekend soạn content batch
+**Cách đắt** (chỉ Claude Sonnet):
+- 5 chương x ~10 nghìn chữ đầu vào = 50 nghìn chữ
+- Sinh 300 thẻ x ~200 chữ đầu ra = 60 nghìn chữ
+- Chi phí: 50k × 70k/triệu + 60k × 350k/triệu ≈ **~25 nghìn**
+- Cộng thêm duyệt thẻ (dùng Claude luôn): ~15 nghìn nữa
+- **Tổng: ~40 nghìn**
 
-- **MiniMax M2.7 highspeed** parse 5 chương sách → 300 flashcard candidate (rẻ + nhanh)
-- **Claude Sonnet** review 20 card random, verify chất lượng
-- Nếu MiniMax sai > 10% → fallback sang Claude cho phần còn lại
+**Cách rẻ** (MiniMax M2.7 + Claude Sonnet review):
+- MiniMax đọc + sinh 300 thẻ: 110k chữ × 15k/triệu = **~2 nghìn**
+- Claude Sonnet review 30 thẻ ngẫu nhiên (10%): ~5 nghìn
+- **Tổng: ~7 nghìn**
+- **Tiết kiệm ~33 nghìn cho 1 tuần**
 
-### Kịch bản 3 — Debug bug phức tạp
-
-- **Claude Opus** (dùng skill `systematic-debugging`) tìm root cause
-- Sau khi hiểu root cause → **MiniMax highspeed** viết fix (task đơn giản)
-
-### Kịch bản 4 — Trước ngày thi 1 tuần
-
-- **Gemini Flash** hoặc **MiniMax** chấm 500 câu trả lời tự luận, cost thấp
-- Cần đối chiếu đáp án chuẩn → không cần reasoning phức tạp
+Nhân với 8 tuần trong 2 tháng: **tiết kiệm ~260 nghìn**. Đủ tiền mua 3-4 cuốn sách chuyên khoa.
 
 ---
 
-## Bảng giá tham khảo (2026)
+## Điều gì cần cẩn thận
 
-Giá approximate cho **1 triệu token input / 1 triệu token output**:
+### 1. Đừng dùng Claude Opus cho mọi việc
 
-| Model | Input | Output | Best cho |
-|---|---|---|---|
-| Claude Opus 4 | $15 | $75 | Reasoning cực sâu |
-| Claude Sonnet 4 | $3 | $15 | Coding chất lượng cao |
-| Claude Haiku 4 | $0.80 | $4 | Task nhanh chất lượng vừa |
-| Gemini 2.5 Pro | $1.25 | $10 | Vision + long context |
-| Gemini 2.5 Flash | $0.30 | $2.50 | Task rẻ + đủ chất lượng |
-| MiniMax M3 | ~$0.40 | ~$1.60 | Coding + multilingual |
-| MiniMax M2.7 highspeed | ~$0.20 | ~$0.80 | Task đơn giản, cost tối thiểu |
-| GPT-5 | $10 | $50 | Nếu đã quen OpenAI ecosystem |
-| GPT-5 mini | $0.25 | $2 | Alternative rẻ của OpenAI |
-| Ollama local | $0 | $0 | Miễn phí, offline, private |
+Opus đắt gấp 5-20 lần các AI khác. Chỉ dùng khi thật sự cần suy nghĩ sâu (hội chẩn ca khó, không phải khám thường).
 
-**Ước tính rough cho dự án cá nhân**:
-- Task lớn (viết feature, refactor): ~10k-50k token/task
-- Task nhỏ (extract, format): ~1k-5k token/task
-- 1 tháng: ~200 task lớn + 500 task nhỏ ≈ 5-10M token
-- **Chỉ Claude**: $60-150/tháng
-- **Multi-model**: $10-30/tháng
+### 2. Đừng dùng MiniMax cho việc cần chính xác cao
+
+MiniMax rất nhanh nhưng đôi khi sai đáp án tinh vi. Việc "chấm câu trả lời y khoa" nên dùng Claude Sonnet trở lên — kẻo học viên bị chấm sai.
+
+### 3. Đừng đổi AI giữa chừng 1 buổi làm việc dài
+
+Bối cảnh bị reset khi đổi. Nên xong 1 việc, xoá session, rồi mới đổi AI.
+
+### 4. Theo dõi chi phí hàng tuần
+
+Vào bảng điều khiển tài khoản Anthropic + MiniMax mỗi tuần xem đã tiêu bao nhiêu. Nếu tăng bất thường → có thể do khoá bị lộ (kẻ khác dùng).
+
+### 5. Nhiều khoá = nhiều rủi ro lộ
+
+Càng nhiều tài khoản AI càng phải cẩn thận. Rotate mỗi 3-6 tháng.
 
 ---
 
-## Rule tự viết trong CLAUDE.md (setup nhẹ nhàng nhất)
+## Bảng kiểm tra "đa AI đã setup xong"
 
-Không cần cài LiteLLM Proxy hay Claude Code Router phức tạp. Đơn giản là viết vào CLAUDE.md:
-
-> ## Model routing rule
->
-> - Task "extract từ PDF" → gõ `claude-mini` (MiniMax M2.7 highspeed)
-> - Task "refactor > 200 lines" → gõ `claude-real` (Claude Sonnet)
-> - Task "translate en to vi" → gõ `claude-mini`
-> - Debug bug > 30 phút chưa xong → escalate `claude-real` (Claude Opus)
-
-Rule này là prompt, Claude tự nhắc anh switch khi thấy task phù hợp. Anh làm quen dần rồi tự có phản xạ.
-
----
-
-## Bảo mật API key nhiều provider
-
-Nhiều key = nhiều rủi ro leak. Rule:
-
-- Mọi key nằm trong 1 file `.env` duy nhất, **gitignored**
-- Trong `.zshrc` load `.env` tự động mỗi lần mở terminal
-- Alias `claude-real` và `claude-mini` set env var trước khi chạy `claude`
-- Rotate tất cả key mỗi 3-6 tháng
-
-Chi tiết secret management: file [06](06_bao_mat_git.md).
-
----
-
-## Anti-pattern cần tránh
-
-### 1. Dùng Claude Opus cho mọi task
-
-Opus đắt gấp 5-20× các model khác. Chỉ dùng khi thật sự cần reasoning phức tạp (hội chẩn ca khó, không phải khám lâm sàng thường).
-
-### 2. Dùng MiniMax cho task cần precision cao
-
-MiniMax M2.7 highspeed rất nhanh nhưng đôi khi sai đáp án tinh vi. Task "chấm câu trả lời y khoa" nên dùng Claude Sonnet trở lên — kẻo học viên bị chấm sai.
-
-### 3. Switch model giữa chừng 1 session dài
-
-Context bị reset khi đổi backend → Claude/MiniMax không hiểu "session trước em đang làm gì". Nên finish 1 task, `/clear`, rồi mới switch model.
-
-### 4. Không theo dõi cost
-
-Vào dashboard Anthropic + MiniMax weekly xem đã tiêu bao nhiêu. Nếu tăng bất thường → có thể do prompt loop, infinite exploration, hoặc key leak (attacker dùng).
-
-### 5. Commit `.env` chứa nhiều key
-
-Càng nhiều key càng đau khi leak. Rotate mọi key + revoke ngay khi phát hiện.
-
----
-
-## Checklist "multi-model đã setup xong"
-
-- [ ] Có API key Claude (Anthropic Console) — đã nạp $5-10
-- [ ] Có API key MiniMax (platform.minimax.io) — đã nạp $2-5
-- [ ] File `.env` chứa cả 2 key, gitignored
-- [ ] Alias `claude-real` và `claude-mini` chạy được
-- [ ] Đã test 1 prompt đơn giản với cả 2 model, thấy output
-- [ ] (Optional) Cài Cline hoặc Continue.dev trong VS Code
-- [ ] (Optional) Cài Ollama + pull 1 model local (nếu RAM ≥ 16GB)
-- [ ] Hiểu khi nào dùng model nào (mục "Nguyên tắc phân task")
+- [ ] Có khoá Claude (nạp 200-300 nghìn)
+- [ ] Có khoá MiniMax (nạp 50-100 nghìn)
+- [ ] Cả 2 khoá đều nằm trong tệp `.env` gitignored
+- [ ] 2 tên tắt `claude` và `claude-mini` chạy được trong terminal
+- [ ] Đã thử 1 câu hỏi đơn giản với cả 2 AI, thấy có kết quả
+- [ ] (Tuỳ chọn) Cài Cline hoặc Continue.dev trong VS Code
+- [ ] (Tuỳ chọn) Cài Ollama nếu máy có RAM ≥ 16GB
 
 ---
 
 ## Nếu anh chỉ nhớ được 3 điều
 
-1. **Claude cho khó, MiniMax cho vừa, Ollama cho đơn giản** — quy tắc phân task cơ bản
-2. **MiniMax có Anthropic-compatible API** — dùng Claude Code với MiniMax chỉ bằng 2 env var
-3. **Multi-model tiết kiệm 40-60% chi phí** — cùng 1 chất lượng thực tế
+1. **Claude cho việc khó, MiniMax cho việc vừa, AI trên máy cho việc đơn giản** — nguyên tắc chia việc cơ bản
+2. **Tiết kiệm 40-60% chi phí** với chất lượng tương đương
+3. **Cài xong 15 phút**, dùng cả đời — đầu tư một lần
 
 ## Đọc tiếp
 
-- [03_setup_may.md](03_setup_may.md) — Setup VS Code + Claude Code (nền)
-- [06_bao_mat_git.md](06_bao_mat_git.md) — Chi tiết secret management (nhiều key hơn thì càng cần chặt)
-- [07_du_an_da_lieu_kickoff.md](07_du_an_da_lieu_kickoff.md) — Áp dụng vào roadmap 6 tuần
+- [03_setup_may.md](03_setup_may.md) — Cài Claude Code (làm trước)
+- [06_bao_mat_git.md](06_bao_mat_git.md) — Nhiều khoá hơn thì càng phải giữ chặt
+- [07_du_an_da_lieu_kickoff.md](07_du_an_da_lieu_kickoff.md) — Áp dụng vào lộ trình 2 tháng

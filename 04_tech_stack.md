@@ -1,241 +1,196 @@
-# 04 — Tech stack (bộ vũ khí, mỗi cái làm gì)
+# 04 — Bộ đồ nghề (mỗi món làm gì, mất phí ở đâu)
 
-> File này chỉ giới thiệu **các "món đồ nghề" thường dùng** cho app học tập, và **mỗi món giải quyết vấn đề gì**. Không viết code — khi anh cần code, Claude Code viết cho anh.
+> File này **không nói tên công nghệ cụ thể**. Chỉ giới thiệu **các món đồ nghề theo vai trò** và **chỗ nào miễn phí, chỗ nào trả tiền**. Khi làm thật, Claude Code sẽ chọn công nghệ phù hợp cho anh.
 
 ## Bức tranh tổng thể
 
-Hình dung app học tập của anh giống 1 bệnh viện:
+Hình dung ứng dụng học tập của anh giống một bệnh viện:
 
-- **Người dùng** = bệnh nhân (chính là anh, khi dùng app)
-- **Web PWA** = phòng khám chính — anh vào đó làm việc chính
-- **Telegram bot** = "trợ lý gọi điện" — nhắc lịch, hỏi han giờ nghỉ
-- **Database (Supabase)** = kho hồ sơ bệnh án — mọi dữ liệu lưu ở đây
-- **Storage (Cloudflare R2)** = kho lưu trữ ảnh (chụp X-quang, ảnh atlas)
-- **Edge Functions** = phòng xét nghiệm — có bệnh phẩm gửi vào, có kết quả gửi ra
-- **pg_cron** = "y tá tự động" — chạy công việc định kỳ (VD 6h30 sáng gửi flashcard)
+- **Người dùng** = bệnh nhân (chính là anh khi dùng ứng dụng)
+- **Trang web** = phòng khám chính — vào đó làm việc, xem hồ sơ
+- **Bot chat** = trợ lý gọi điện — nhắc lịch, hỏi han giờ nghỉ
+- **Kho hồ sơ** = nơi lưu mọi dữ liệu (thẻ ôn, câu hỏi, tiến độ)
+- **Kho ảnh** = nơi lưu ảnh atlas
+- **Phòng xét nghiệm tự động** = xử lý các việc phức tạp (gọi AI chấm bài, gửi thông báo)
+- **Y tá tự động** = chạy công việc định kỳ (6h30 sáng gửi thẻ)
 
-Anh không cần cài hết ngay. Bắt đầu từ 2 món (web + database) là chạy được.
-
----
-
-## Món 1 — Supabase (backend hoàn chỉnh trong 1 gói)
-
-**Supabase là gì?** 1 dịch vụ cloud cung cấp cùng lúc:
-- Database (PostgreSQL — DB SQL kinh điển)
-- Đăng ký/đăng nhập user (Auth)
-- Kho lưu trữ file (Storage cho ảnh, PDF)
-- Function chạy server (Edge Functions)
-- Scheduler chạy công việc định kỳ (pg_cron)
-
-**Vì sao chọn Supabase?**
-- Miễn phí tier đủ cho dự án cá nhân
-- 1 dịch vụ thay 5 dịch vụ → đỡ đau đầu quản lý
-- Dashboard đẹp, click-to-config nhiều thứ
-- Có tài liệu tiếng Anh rất tốt
-
-**Vấn đề giải quyết cho da liễu**:
-
-| Vấn đề | Supabase giải sao |
-|---|---|
-| Lưu 500 flashcard tự soạn | Bảng `flashcard` trong Database |
-| Đăng nhập trên điện thoại + laptop, sync tự động | Auth + Realtime |
-| Lưu 1000 ảnh atlas ca lâm sàng | Storage (hoặc Cloudflare R2 nếu > 1GB) |
-| Chấm câu trả lời tự luận bằng AI | Edge Function gọi Claude/Gemini API |
-| 6h30 sáng tự gửi Telegram | pg_cron trigger Edge Function |
-
-**Rule vàng**: Mọi bảng phải bật **Row Level Security (RLS)** — quy tắc chỉ user chủ hồ sơ mới đọc/sửa được record của mình. Không bật là ai biết URL Supabase project là đọc được toàn bộ DB. Rất nguy hiểm.
+Anh không cần cài hết ngay. Bắt đầu từ 2 món (trang web + kho hồ sơ) là đã chạy được.
 
 ---
 
-## Món 2 — Web PWA (giao diện chính)
+## Món 1 — Kho hồ sơ (backend)
 
-**PWA** viết tắt "Progressive Web App" — 1 loại web đặc biệt:
-- Truy cập qua browser như web thường (VD `dalieu.vercel.app`)
-- Có thể **cài vào điện thoại** như app — icon xuất hiện trên home screen
-- **Hoạt động offline** — cache dữ liệu, dùng được khi wifi bệnh viện chập chờn
-- Push notification (giới hạn — không mạnh bằng native app)
+**Vai trò**: Lưu mọi dữ liệu (thẻ ôn, câu hỏi, tiến độ ôn, lịch sử). Cung cấp đăng nhập. Chạy công việc định kỳ.
 
-**Vì sao PWA thay vì native app iOS/Android?**
-- 1 codebase chạy trên mọi thiết bị (Mac, Windows, Android, iPhone)
-- Không cần submit lên App Store (mất phí + duyệt lâu)
-- Update là auto — mỗi lần anh deploy code mới, user mở app là tự nhận
+**Vì sao cần**: không có kho hồ sơ, dữ liệu chỉ nằm trên một máy — đổi máy là mất.
 
-**Bộ stack thường dùng để làm PWA**:
+**Chỗ nào miễn phí, chỗ nào trả tiền**:
 
-| Thư viện | Vai trò |
-|---|---|
-| **Vite** | Trình build code — biến TypeScript/JSX thành file browser hiểu |
-| **React 19** | Framework FE phổ biến nhất — Claude Code viết cực nhanh |
-| **TanStack Router** | Điều hướng giữa các trang — file-based, an toàn kiểu |
-| **shadcn/ui** | Bộ component đẹp có sẵn (button, dialog, form) — copy vào project, sửa được tự do |
-| **Tailwind CSS** | Viết style bằng class (VD `p-4 text-red-500`) thay vì file CSS riêng |
-| **vite-plugin-pwa** | Biến app thành PWA (offline, installable) — 1 plugin, khỏi setup phức tạp |
-| **Zustand** | State management — nhớ trạng thái UI (menu đang mở, tab đang chọn) |
+- **Miễn phí** cho quy mô cá nhân: lưu được khoảng 500MB dữ liệu, 1GB ảnh, hàng chục nghìn lượt gọi mỗi tháng
+- **Trả tiền** khi vượt ngưỡng: khoảng 500-700 nghìn đồng/tháng, nhưng dự án cá nhân **rất khó vượt**
 
-**Vấn đề PWA giải cho da liễu**:
-- Trực đêm không có wifi tốt → xem flashcard đã ôn hôm qua vẫn được (offline cache)
-- Cài icon vào home điện thoại → mở 1 chạm như app native
-- Update deck mới sáng nay → chiều mở app là thấy
+Với 2 tháng đầu, gần như chắc chắn ở mức miễn phí.
 
 ---
 
-## Món 3 — Telegram Bot (trợ lý push)
+## Món 2 — Trang web (frontend)
 
-**Vì sao có web rồi vẫn cần bot?**
+**Vai trò**: Giao diện chính anh làm việc. Đăng nhập, xem thẻ, soạn thẻ, ôn tập, xem thống kê.
 
-Web tuyệt vời khi anh **chủ động mở**. Nhưng anh không chủ động mở nếu quên. Bot Telegram làm ngược — **nó chủ động push tin cho anh**.
+**Đặc điểm quan trọng**:
+- Chạy trong trình duyệt (không cần tải app từ App Store)
+- Có thể **cài vào điện thoại** như một app thật — bấm icon trên màn hình chính là mở
+- **Hoạt động khi mất mạng** — trực đêm mạng chập chờn vẫn xem được nội dung đã tải
 
-**Kịch bản dùng bot**:
+**Chỗ miễn phí, chỗ trả tiền**:
 
-- 6h30 sáng: bot gửi 5 flashcard, anh vừa uống cà phê vừa bấm rating trên điện thoại
-- 12h trưa nghỉ giữa 2 ca khám: gõ `/quiz` vào bot, làm 5 câu MCQ ngẫu nhiên 3 phút
-- Có case lạ đêm trực: gõ `/case`, bot gửi 1 case study da liễu ngẫu nhiên có ảnh, đọc giết thời gian chờ
-- Cuối tuần: bot gửi báo cáo — tuần này anh đã ôn 250 thẻ, retention 78%, streak 12 ngày
+- **Miễn phí** để đưa lên mạng cho quy mô cá nhân: khoảng 100GB dữ liệu chạy qua mỗi tháng — rất thoải mái
+- **Miễn phí** để dùng như app trên điện thoại — không tốn phí App Store
+- **Trả tiền** chỉ khi có hàng nghìn user cùng lúc, không phải trường hợp của anh
 
-**Bot hoạt động ra sao?**
+---
 
-Anh nói chuyện với `@BotFather` trên Telegram → nó cấp cho anh 1 "bot token" (dạng chuỗi ký tự dài). Sau đó code của anh (chạy trên máy hoặc trên Supabase Edge Function) dùng token đó gọi Telegram API để gửi tin.
+## Món 3 — Bot chat (Telegram)
 
-**Chạy bot ở đâu?** 3 lựa chọn:
+**Vai trò**: Gửi thông báo chủ động cho anh — thẻ ôn sáng, quiz trưa, báo cáo cuối tuần.
 
-| Nơi chạy | Ưu | Nhược |
+**Vì sao có trang web rồi vẫn cần bot?**
+
+Trang web tuyệt vời khi anh **chủ động mở**. Nhưng anh sẽ không chủ động mở nếu quên. Bot làm ngược — **nó chủ động nhắn cho anh**.
+
+**Kịch bản dùng bot** (5 tình huống):
+
+- **6h30 sáng**: bot gửi 5 thẻ, anh vừa uống cà phê vừa bấm rating trên điện thoại
+- **12h trưa nghỉ giữa 2 ca**: gõ `/quiz` vào bot, làm 5 câu trắc nghiệm 3 phút
+- **Đêm trực có case lạ**: gõ `/case`, bot gửi 1 case study ngẫu nhiên có ảnh
+- **Đi ăn cưới xa nhà**: nhắn `/tam-nghi` bot dừng gửi 3 ngày
+- **Cuối tuần**: bot tự gửi báo cáo — tuần này ôn 250 thẻ, nhớ 78%, chuỗi 12 ngày
+
+**Chỗ miễn phí, chỗ trả tiền**:
+
+- **Bot chạy trên Telegram: hoàn toàn miễn phí** — không giới hạn số tin nhắn cho dùng cá nhân
+- Chạy bot ở đâu:
+  - Trên máy laptop cá nhân + hẹn giờ tự động: **miễn phí** (nhưng phải bật máy đúng giờ)
+  - Trên máy chủ đám mây: **miễn phí** với dịch vụ có sẵn ở Món 1 (5-10 phút chạy mỗi ngày, dư thoải mái trong ngưỡng free)
+
+---
+
+## Món 4 — Kho ảnh (khi vượt 1GB)
+
+**Vai trò**: Lưu ảnh atlas ca lâm sàng, ảnh sách quét.
+
+**Vì sao tách riêng**:
+
+Kho hồ sơ ở Món 1 chỉ cho lưu 1GB ảnh miễn phí. Một ảnh ca lâm sàng khoảng 500KB — được khoảng 2000 ảnh. Nếu anh tích luỹ nhiều hơn, cần một kho ảnh riêng.
+
+**Chỗ miễn phí, chỗ trả tiền**:
+
+- **Miễn phí** lưu đến 10GB — được khoảng 20.000 ảnh
+- **Miễn phí** cho mọi lượt tải xuống (bất cứ ai xem ảnh cũng không tốn phí)
+- Với 2 tháng đầu, hoàn toàn nằm trong ngưỡng miễn phí
+
+---
+
+## Món 5 — Phòng xét nghiệm tự động (edge functions)
+
+**Vai trò**: Xử lý các việc phức tạp không tiện làm trên trang web:
+- Nhận webhook từ Telegram khi anh bấm nút
+- Gọi API AI để chấm bài tự luận
+- Sinh báo cáo tự động cuối tuần
+
+**Vì sao cần**: một số việc cần chạy trên máy chủ (không phải máy anh), để đảm bảo bảo mật và có thể chạy 24/7.
+
+**Chỗ miễn phí, chỗ trả tiền**:
+
+- **Miễn phí** 500.000 lượt chạy mỗi tháng — dự án cá nhân dùng khoảng 3.000-5.000 lượt, dư thoải mái
+- **Trả tiền** khi vượt: khoảng 50 nghìn đồng/1 triệu lượt thêm
+
+---
+
+## Món 6 — AI dev (Claude Code + MiniMax)
+
+**Vai trò**: AI viết code cho anh, hướng dẫn từng bước setup, chấm bài trong ứng dụng.
+
+**Chỗ miễn phí, chỗ trả tiền**:
+
+- **Trả tiền** theo lượng dùng thực tế
+- **Claude Code** (AI xịn): khoảng 200-500 nghìn đồng/tháng cho dùng cá nhân
+- **MiniMax** (AI rẻ): khoảng 50-150 nghìn đồng/tháng, dùng cho việc đơn giản (dịch, sắp xếp lại chữ)
+- Chi tiết cách chọn AI nào lúc nào: xem file [09_multi_model_workflow.md](09_multi_model_workflow.md)
+
+---
+
+## Món 7 — AI chạy trên máy (miễn phí, khi cần offline)
+
+**Vai trò**: Chạy AI đơn giản trên máy anh, không cần mạng, không tốn tiền.
+
+**Khi nào cần**:
+- Đêm trực mạng chập chờn
+- Dữ liệu nhạy cảm không muốn gửi lên mạng
+- Việc lặp đi lặp lại đơn giản (định dạng chữ, dịch câu ngắn)
+
+**Yêu cầu**: máy phải có RAM ≥ 16GB cho model mạnh, RAM 8GB dùng model nhẹ hơn.
+
+**Chỗ miễn phí, chỗ trả tiền**:
+
+- **Hoàn toàn miễn phí** — chỉ tốn điện + phần cứng anh đã có
+
+---
+
+## Bảng chọn món theo nhu cầu
+
+| Anh muốn làm gì | Cần món nào | Miễn phí không? |
 |---|---|---|
-| Máy laptop cá nhân | Miễn phí, đơn giản | Phải bật máy đúng giờ |
-| Supabase Edge Function + pg_cron | Cloud, luôn on, không cần máy anh chạy | Code phải viết bằng TypeScript (Deno runtime) |
-| VPS Việt Nam (~50k/tháng) | IP Việt Nam để scrape site trường | Tốn tiền + quản server |
-
-**Recommend cho bác sĩ**: **Supabase Edge Function**. Free, không cần máy chạy, share code + DB với web.
-
----
-
-## Món 4 — Cloudflare R2 (kho ảnh giá rẻ)
-
-**Vấn đề**: Supabase Storage free tier chỉ 1GB. 1 ảnh atlas cỡ 500KB. Chỉ chứa được ~2000 ảnh.
-
-**Giải pháp**: **Cloudflare R2** — dịch vụ lưu ảnh giá rẻ của Cloudflare. Free tier **10GB**, và (điểm đặc biệt) **không tính phí egress** (mỗi lần user tải ảnh về).
-
-**So sánh nhanh**:
-
-| Dịch vụ | Free storage | Egress fee |
-|---|---|---|
-| Supabase Storage | 1 GB | Có tính (theo bandwidth) |
-| Cloudflare R2 | 10 GB | Miễn phí |
-| AWS S3 | 5 GB (12 tháng đầu) | $0.09/GB (đắt) |
-
-**Ứng dụng cho da liễu**: 10,000 ảnh ca lâm sàng ~ 5GB → nằm gọn trong free tier R2. Web/bot load ảnh không lo bill tăng.
-
-**Cách dùng**: script data pipeline upload ảnh lên R2, database chỉ lưu URL. Web/bot load ảnh trực tiếp từ R2 URL.
+| Lưu 500-800 thẻ ôn | Món 1 (kho hồ sơ) | Miễn phí (thoải mái) |
+| Đăng nhập trên nhiều máy | Món 1 (kho hồ sơ) | Miễn phí |
+| Nhận thẻ ôn sáng qua Telegram | Món 3 (bot) + Món 1 (kho) | Miễn phí |
+| Xem ảnh atlas offline khi trực | Món 2 (web) + Món 4 (kho ảnh) | Miễn phí |
+| Chấm bài tự luận bằng AI | Món 5 (phòng xét nghiệm) + Món 6 (AI) | AI tính tiền |
+| Lưu progress SRS theo Anki | Món 1 (kho) + Món 5 (xử lý logic) | Miễn phí |
+| Chia sẻ deck cho đồng nghiệp | Món 1 (kho) + quy tắc phân quyền | Miễn phí |
+| Dùng offline hoàn toàn | Món 2 (web PWA) + Món 7 (AI local) | Miễn phí |
 
 ---
 
-## Món 5 — Vercel (deploy web miễn phí)
+## Luồng chạy thực tế (kịch bản "sáng 6h30 nhận thẻ")
 
-**Vercel là gì?** Dịch vụ host website. Free tier "Hobby" cho cá nhân là quá đủ:
-- 100 GB bandwidth/tháng
-- Deploy không giới hạn
-- Auto SSL (HTTPS)
-- Custom domain (VD `dalieu.vn`)
-
-**Cách hoạt động** (magic):
-
-1. Anh push code lên GitHub (`git push`)
-2. Vercel tự phát hiện có commit mới
-3. Trong ~1 phút: build code, deploy, gửi anh URL mới
-4. User mở app là thấy version mới ngay
-
-Không cần setup server. Không cần config nginx. Không cần chăm nom.
-
----
-
-## Món 6 — Python + curl_cffi (khi cần scrape web)
-
-**Khi nào cần Python?** Khi anh muốn:
-- Scrape đề thi từ trang moodle của trường Y
-- Parse PDF sách CK1 thành flashcard
-- Xử lý hàng loạt (batch process) — VD upload 500 ảnh cùng lúc
-
-**Vì sao dùng Python?** Nhiều thư viện tốt cho scrape/parse. Cộng đồng lớn. Claude Code viết Python rất giỏi.
-
-**Vấn đề đặc biệt**: nhiều site (British Council, test-english, các trang có Cloudflare) chặn HTTP request thường theo "TLS fingerprint" — nghĩa là chúng nhận ra request không phải từ browser thật là chặn.
-
-**Giải pháp**: thư viện tên **`curl_cffi`** — giả TLS fingerprint của Chrome, qua được Cloudflare check dễ dàng. Đây là bí quyết mà nhiều dev không biết.
-
-**Chạy Python ở đâu?**
-- Trên laptop anh + scheduler OS (Task Scheduler Windows / launchd Mac / systemd Linux) — miễn phí, đơn giản
-- Trên VPS nếu cần chạy 24/7
-
----
-
-## Món 7 — Ollama (AI local, miễn phí, offline)
-
-**Ollama là gì?** Wrapper cho phép chạy model AI open-source (Llama, Qwen, Gemma) **trên máy anh**, không cần internet, không tốn tiền.
-
-**Vấn đề giải**: 
-- Trực đêm không có wifi tốt → dùng Ollama offline
-- Dữ liệu nhạy cảm không muốn gửi lên cloud → dùng local
-- Task đơn giản (format JSON, dịch câu ngắn) → không cần Claude "xịn"
-
-**Yêu cầu máy**: RAM ≥ 16GB cho model 7 tỷ tham số. RAM 8GB dùng model 3 tỷ nhẹ hơn.
-
-**Chất lượng vs Claude**: model local yếu hơn Claude Sonnet ~50-70% quality nhưng miễn phí. Dùng cho task lặp đi lặp lại không cần chính xác cao.
-
----
-
-## Bảng chọn stack theo nhu cầu
-
-| Anh muốn làm gì | Món cần |
-|---|---|
-| Nhận flashcard sáng qua Telegram | Bot + Supabase pg_cron |
-| Xem ảnh atlas offline khi trực | Web PWA + Cloudflare R2 |
-| Chấm bài tập tự luận bằng AI | Supabase Edge Function + Claude/Gemini API |
-| Lưu progress SRS theo Anki algorithm | Supabase Database + logic trong Edge Function |
-| Scrape đề thi từ moodle trường | Python + curl_cffi + laptop scheduler |
-| Share deck với đồng nghiệp | Supabase Auth + RLS sharing rule |
-| Dùng offline không mạng | PWA + Ollama local |
-
----
-
-## Luồng data điển hình (bức tranh chạy)
-
-Kịch bản "sáng 6h30 nhận flashcard":
-
-1. **pg_cron** trong Supabase (giống báo thức) đúng 6h30 giờ VN → gọi Edge Function
-2. **Edge Function** truy vấn Database, lấy 5 flashcard due nhất cho user X
-3. Edge Function gọi Telegram Bot API, gửi 5 tin nhắn kèm inline button
+1. **Y tá tự động** (trong Món 1) đúng 6h30 giờ Việt Nam → gọi phòng xét nghiệm (Món 5)
+2. **Phòng xét nghiệm** truy vấn kho hồ sơ → lấy 5 thẻ cần ôn nhất cho anh
+3. Phòng xét nghiệm gọi API bot Telegram → gửi 5 tin nhắn kèm nút "Nhớ/Khó/Quên"
 4. Anh nhận thông báo trên điện thoại, mở Telegram, bấm rating
-5. Telegram gọi webhook về Edge Function khác (`bot-callback`)
-6. Callback function cập nhật SRS state vào Database
-7. Web app anh mở lên → thấy progress đã cập nhật (vì cùng chung 1 DB)
+5. Telegram gọi phòng xét nghiệm khác → cập nhật trạng thái ôn vào kho hồ sơ
+6. Anh mở trang web trên máy tính → thấy tiến độ đã cập nhật (vì cùng chung kho hồ sơ)
 
-Xong 1 luồng, 5 phút, không cần máy anh chạy gì.
+Xong một luồng, khoảng 5 giây. Không cần máy anh chạy gì — mọi thứ trên đám mây.
 
 ---
 
-## Chi phí toàn stack (1 năm, dự án cá nhân)
+## Chi phí toàn bộ trong 2 tháng đầu
 
-| Món | Chi phí |
+| Món | Chi phí 2 tháng |
 |---|---|
-| Supabase | $0 (free tier) |
-| Vercel | $0 (Hobby) |
-| Cloudflare R2 | $0 (10GB free) |
-| GitHub | $0 |
-| Claude Code API | $60-180 |
-| MiniMax API | $24-60 |
-| Ollama | $0 (điện + phần cứng anh có sẵn) |
-| Domain optional | $15 |
-| **Tổng** | **$85-255/năm (~2-6 triệu VND)** |
+| Kho hồ sơ (Món 1) | 0 |
+| Trang web (Món 2) | 0 |
+| Bot Telegram (Món 3) | 0 |
+| Kho ảnh (Món 4) | 0 |
+| Phòng xét nghiệm (Món 5) | 0 |
+| AI dev — Claude Code | 300-600 nghìn (dùng nhiều) |
+| AI dev — MiniMax | 100-200 nghìn |
+| AI chạy trên máy (Món 7) | 0 |
+| Tên miền tuỳ chọn | 200-300 nghìn/năm (không bắt buộc) |
+| **Tổng 2 tháng đầu** | **400-800 nghìn** |
 
-Toàn bộ hạ tầng miễn phí. Chỉ tốn AI API — mà multi-model workflow (file 09) tiết kiệm được 40-60%.
+So sánh: học phí chuyên khoa 1 khoảng 20-40 triệu/năm. Đầu tư 400-800 nghìn cho ứng dụng học tập trong 2 tháng — nếu giúp anh tăng 8-12% điểm thi thì rất đáng.
 
 ---
 
 ## Nếu anh chỉ nhớ được 3 điều
 
-1. **Supabase là "backend all-in-one"** — 1 dịch vụ thay 5 dịch vụ
-2. **Web PWA + Telegram bot** là combo mạnh nhất cho app học tập cá nhân
-3. **Cloudflare R2 rẻ hơn Supabase Storage** cho lưu ảnh — dùng khi >1GB
+1. **Hầu hết mọi thứ miễn phí** cho dự án cá nhân — chỉ có AI dev tính tiền theo lượng dùng
+2. **Món 1 (kho hồ sơ) là trung tâm** — mọi món khác đều nói chuyện qua nó
+3. **Chi phí 2 tháng đầu chỉ 400-800 nghìn** — rẻ hơn 1 ngày trực
 
 ## Đọc tiếp
 
-- [05_content_data_pipeline.md](05_content_data_pipeline.md) — Nguyên tắc seed content không sai (quan trọng cho da liễu)
-- [07_du_an_da_lieu_kickoff.md](07_du_an_da_lieu_kickoff.md) — Áp dụng vào dự án cụ thể
+- [05_content_data_pipeline.md](05_content_data_pipeline.md) — Nguyên tắc chuẩn bị nội dung học không sai
+- [07_du_an_da_lieu_kickoff.md](07_du_an_da_lieu_kickoff.md) — Áp dụng vào lộ trình 2 tháng

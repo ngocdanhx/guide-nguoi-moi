@@ -1,187 +1,208 @@
-# 03 — Setup máy tính (chuẩn bị đồ nghề)
+# 03 — Chuẩn bị máy tính (cài gì, mất tiền không)
 
-> File này chỉ mô tả **cần cài cái gì và tại sao**. Câu lệnh cài đặt cụ thể — em không viết, khi cần anh gõ vào Claude Code là nó hướng dẫn từng bước cho anh.
+> File này chỉ nói **cần cài cái gì và tại sao**. Câu lệnh cụ thể — không cần thuộc, khi cài thật Claude Code sẽ hướng dẫn từng bước.
 
 ## Bức tranh chung
 
-Hình dung anh mở 1 phòng khám mới. Cần chuẩn bị:
+Hình dung anh mở một phòng khám mới. Cần chuẩn bị:
 
-1. **Điện, nước, WiFi** (nền tảng) — máy tính, tài khoản
-2. **Bàn làm việc + tủ hồ sơ** (nơi làm việc) — VS Code, Terminal
-3. **Máy chụp X-quang, máy siêu âm** (công cụ chính) — Claude Code, Cline
-4. **Kho thuốc + kho vật tư** (tài nguyên) — Supabase, GitHub
-5. **Nhân viên phụ** (bổ trợ) — Git, MiniMax API
+1. **Điện + mạng + tài khoản** — nền tảng
+2. **Bàn làm việc + tủ hồ sơ** — nơi làm việc
+3. **Máy chụp X-quang, siêu âm** — công cụ chính
+4. **Kho thuốc + kho vật tư** — tài nguyên
+5. **Nhân viên phụ** — công cụ bổ trợ
 
-Anh không cần setup hết 1 lượt. Bắt đầu từ 3 cái đầu tiên là chạy được. Cái sau cài dần khi cần.
+Không cần chuẩn bị hết một lượt. Bắt đầu từ 3 nhóm đầu tiên là chạy được. Nhóm sau cài dần khi cần.
 
 ---
 
-## Nhóm 1 — Tài khoản (làm trước tiên, miễn phí)
+## Nhóm 1 — Tài khoản (làm trước tiên, đa số miễn phí)
 
-3 tài khoản bắt buộc:
+Cần 3-4 tài khoản chính:
 
-**GitHub** — nơi lưu code. Miễn phí, đăng ký bằng email 2 phút. Sau này anh sẽ push mọi dự án lên đây, coi như "cloud backup" cho code.
+### GitHub (miễn phí)
+Nơi lưu code. Đăng ký bằng email 2 phút. Sau này mọi dự án sẽ lưu lên đây, coi như sao lưu trên mạng.
 
-**Anthropic Console** — nơi cấp API key để Claude Code chạy. Miễn phí đăng ký. Sau đăng ký nạp $5-10 vào tài khoản để bắt đầu. Dùng cá nhân 1 tháng ~$5-15 là đủ.
+### Anthropic Console (miễn phí đăng ký, nạp tiền để dùng)
+Nơi cấp khoá để Claude Code hoạt động. Đăng ký miễn phí, nạp 200-500 nghìn để bắt đầu. Dùng cá nhân 1 tháng khoảng 200-500 nghìn là đủ.
 
-**Supabase** — nơi host database + auth cho app. Miễn phí tier đủ cho dự án cá nhân (500MB DB, 1GB storage, 50k user hoạt động/tháng).
+### Supabase (miễn phí)
+Nơi lưu dữ liệu (kho hồ sơ) — ứng với "Món 1" trong file 04. Miễn phí đủ cho dự án cá nhân.
 
-Tùy chọn (không cần ngay):
-- **Vercel** — deploy web miễn phí. Đăng ký sau
-- **Telegram** — cài app trên điện thoại, tạo bot qua `@BotFather` khi cần
+### MiniMax (miễn phí đăng ký, trả tiền theo dùng)
+Cung cấp AI rẻ cho việc đơn giản. Đăng ký miễn phí, nạp 50-100 nghìn để bắt đầu.
+
+**Tuỳ chọn (không cần ngay)**:
+- **Vercel** — đưa web lên mạng miễn phí
+- **Telegram** — cài app trên điện thoại, tạo bot qua @BotFather khi cần
 
 ---
 
 ## Nhóm 2 — Máy tính + terminal
 
-**Máy tính**: bất kỳ máy Mac/Windows/Linux nào có ≥ 8GB RAM là chạy tốt.
+### Máy tính
+Bất kỳ máy Mac/Windows/Linux nào có RAM ≥ 8GB. Nếu định dùng AI trên máy (Ollama, xem file 09) thì cần RAM ≥ 16GB.
 
-**Terminal** (cửa sổ dòng lệnh) — nơi anh gõ lệnh giao tiếp với máy:
-- Mac: có sẵn (Cmd+Space, gõ "Terminal")
-- Windows: cài "Windows Terminal" từ Microsoft Store, sau đó cài WSL2 (Windows Subsystem for Linux) — chạy Linux bên trong Windows. Claude Code chạy mượt hơn trên WSL2 so với native Windows
+### Terminal (cửa sổ dòng lệnh)
+Nơi anh gõ lệnh giao tiếp với máy:
+- **Mac**: có sẵn (bấm Cmd+Space, gõ "Terminal")
+- **Windows**: cài "Windows Terminal" từ Microsoft Store, sau đó cài WSL2 (Linux chạy bên trong Windows) — Claude Code chạy mượt hơn trên WSL2
 
-**Homebrew** (Mac) — trình quản lý phần mềm. Cài Homebrew rồi mọi tool khác cài 1 dòng lệnh là xong. Windows thì tương đương là WinGet.
+### Homebrew (Mac) / WinGet (Windows)
+Chương trình quản lý phần mềm. Cài Homebrew rồi mọi công cụ khác cài 1 dòng lệnh là xong.
+
+**Chi phí**: miễn phí toàn bộ.
 
 ---
 
-## Nhóm 3 — VS Code (IDE chính — BẮT BUỘC)
+## Nhóm 3 — VS Code (nơi soạn thảo — BẮT BUỘC)
 
 Anh sẽ dùng **VS Code** làm nơi làm việc chính, không phải chỉ terminal.
 
 **Vì sao VS Code?**
 - Miễn phí, do Microsoft phát hành
-- Cross-platform (Mac/Windows/Linux)
-- Có Claude Code extension chính thức — click 1 nút mở panel Claude bên phải màn hình
-- Nhìn diff trực quan khi Claude sửa code (chỗ nào thêm, chỗ nào xoá, có highlight)
-- Cài extension khác được — Cline (multi-model), Prettier (auto format), GitLens (xem lịch sử git), …
+- Chạy trên mọi hệ điều hành (Mac/Windows/Linux)
+- Có bộ cài thêm Claude Code chính thức — bấm 1 nút mở khung chat AI bên phải màn hình
+- Nhìn diff (thay đổi) trực quan khi AI sửa code
+- Cài nhiều bộ cài thêm khác cho đa AI (Cline, Continue.dev)
 
-**Extension bắt buộc** (cài trong VS Code, tab Extensions):
+### Bộ cài thêm bắt buộc
 
-| Extension | Vai trò |
+| Bộ cài thêm | Vai trò | Miễn phí |
+|---|---|---|
+| Claude Code (Anthropic) | AI làm việc chính | ✓ (chỉ trả phí AI khi dùng) |
+| Prettier | Tự động định dạng code khi lưu | ✓ |
+| ESLint | Báo lỗi ngay khi gõ | ✓ |
+| GitLens | Xem lịch sử ai sửa dòng nào | ✓ |
+| Tailwind CSS IntelliSense | Gợi ý style khi làm web | ✓ |
+
+### Bộ cài thêm khuyến khích cho đa AI
+
+| Bộ cài thêm | Vai trò |
 |---|---|
-| Claude Code (Anthropic) | AI dev chính — panel bên phải, shortcut `Cmd/Ctrl + Esc` |
-| Prettier | Tự động format code khi save |
-| ESLint | Báo lỗi TypeScript ngay khi gõ |
-| GitLens | Xem git blame — ai sửa dòng nào khi nào |
-| Tailwind CSS IntelliSense | Autocomplete class Tailwind (khi làm frontend) |
+| Cline | AI hỗ trợ nhiều loại (Claude, MiniMax, Gemini). Miễn phí. |
+| Continue.dev | Copilot đa nguồn, có gợi ý tự động khi gõ. Miễn phí. |
 
-**Extension khuyến khích cho multi-model workflow**:
+Chi tiết cách dùng đa AI: file [09_multi_model_workflow.md](09_multi_model_workflow.md).
 
-| Extension | Vai trò |
-|---|---|
-| Cline | AI agent hỗ trợ **nhiều model** — Claude, MiniMax, Gemini, OpenAI. Switch bằng 1 click |
-| Continue.dev | Copilot đa provider, có support model local (Ollama) |
-
-Chi tiết cách dùng multi-model: file [09](09_multi_model_workflow.md).
+**Chi phí**: VS Code + tất cả bộ cài thêm đều **miễn phí**. Chỉ trả phí AI khi dùng.
 
 ---
 
-## Nhóm 4 — Claude Code (AI dev chính)
+## Nhóm 4 — Claude Code (AI làm việc chính)
 
-Cài Claude Code có 3 cách:
+Cài bằng 1 lệnh cài đặt. Khi cài Claude Code sẽ hướng dẫn.
 
-1. **Homebrew** (Mac): 1 dòng lệnh, khuyến khích
-2. **Script install** từ trang chủ Anthropic: 1 dòng lệnh, chạy được trên Mac/Linux/WSL
-3. **npm install global**: nếu anh đã có Node.js
+Sau khi cài, gõ `claude` trong terminal là mở khung chat. Lần đầu nó bảo anh đăng nhập tài khoản Anthropic (tự mở trình duyệt).
 
-Sau khi cài xong, gõ `claude` trong terminal là mở giao diện chat. Lần đầu tiên nó bảo anh đăng nhập Anthropic account (mở browser tự động).
+### 3 chế độ quyền (quan trọng!)
 
-**3 chế độ permission** (quan trọng!) — bấm `Shift + Tab` để cycle:
+Bấm `Shift + Tab` để đổi qua lại giữa 3 chế độ:
 
 | Chế độ | Hành vi | Khi nào dùng |
 |---|---|---|
-| **Manual** | Hỏi trước mọi edit | Task lạ, chưa tin |
-| **Plan** | Claude viết plan trước, chờ approve mới sửa | Task lớn, muốn review kế hoạch |
-| **Edit automatically** | Tự sửa + tự chạy lệnh được allow | Task quen, cần tốc độ |
+| **Thủ công** | Hỏi trước mọi lần sửa | Việc lạ, chưa tin |
+| **Kế hoạch** | AI viết kế hoạch trước, chờ duyệt mới sửa | Việc lớn, muốn xem xét |
+| **Tự động** | Tự sửa + tự chạy lệnh được phép | Việc quen, cần tốc độ |
 
-Người mới nên bắt đầu **Manual**. Sau 1 tuần chuyển **Plan** cho task lớn.
+**Người mới nên bắt đầu Thủ công**. Sau 1 tuần chuyển sang Kế hoạch cho việc lớn.
+
+**Chi phí**: khoảng 200-500 nghìn/tháng cho dùng cá nhân.
 
 ---
 
 ## Nhóm 5 — Git + GitHub (nơi lưu code)
 
-**Git** — trình quản lý phiên bản code. Mac có sẵn; Windows cài từ git-scm.com.
+### Git
+Chương trình quản lý phiên bản code. Mac có sẵn; Windows cài từ trang chủ.
 
 Cài 1 lần, cấu hình 3 thứ:
 - Tên anh
-- Email của anh (dùng chính email GitHub)
-- Đặt default branch là `main`
+- Email của anh (dùng email GitHub)
+- Đặt tên nhánh mặc định là `main`
 
-**Đăng nhập GitHub** — 2 cách:
+### Đăng nhập GitHub — 2 cách
 
-- **HTTPS + Personal Access Token** — dễ nhất cho người mới. Vào GitHub Settings → tạo token → dùng token thay password khi git push
-- **SSH key** — bảo mật hơn, dùng cho lâu dài. Có hướng dẫn chi tiết trên trang GitHub
+**Cách 1 — HTTPS + khoá cá nhân**: dễ nhất cho người mới. Vào GitHub Settings, tạo khoá, dùng khoá thay mật khẩu khi push code.
 
-Mọi tài liệu này, khi anh gõ vào Claude Code "hướng dẫn tôi cài git và đăng nhập GitHub", nó sẽ chỉ từng bước.
+**Cách 2 — SSH**: bảo mật hơn, cài phức tạp hơn một chút.
 
----
+Cả 2 cách đều miễn phí. Khi anh gõ vào Claude Code "hướng dẫn tôi cài git và đăng nhập GitHub", nó sẽ chỉ từng bước.
 
-## Nhóm 6 — Các tool phụ (cài khi cần, không cần ngay)
-
-Khi Claude Code báo lỗi thiếu tool nào thì mới cài — sẽ nhớ lâu hơn.
-
-| Tool | Khi nào cần |
-|---|---|
-| Python 3.11+ | Khi làm bot Telegram bằng Python hoặc data script |
-| Node.js 22+ | Frontend web (React/Vite) |
-| Bun | Nếu dự án dùng Bun (nhanh hơn npm ~10×) |
-| Supabase CLI | Quản lý migration DB, deploy edge function |
-| jq | Parse JSON trong terminal |
-| ripgrep | Grep nhanh (Claude Code dùng) |
-| GitHub CLI (`gh`) | Tạo PR, issue từ terminal |
+**Chi phí**: Git + GitHub đều **miễn phí**.
 
 ---
 
-## Chi phí ước tính 1 năm
+## Nhóm 6 — Các công cụ phụ (cài khi cần)
 
-Cho use case bác sĩ CK1 dùng cá nhân:
+Khi Claude Code báo thiếu công cụ nào thì cài công cụ đó. Không cần cài hết một lượt.
 
-| Dịch vụ | Chi phí/năm |
-|---|---|
-| Claude Code API | ~$60-180 (60% việc chính) |
-| MiniMax API | ~$24-60 (40% việc rẻ — extract, dịch) |
-| Supabase | $0 (free tier) |
-| Vercel | $0 (Hobby tier) |
-| Cloudflare R2 (ảnh atlas) | $0 (10GB free) |
-| GitHub | $0 |
-| Domain (nếu muốn `dalieu.xxx`) | ~$15/năm optional |
-| **Tổng** | **~$85-255/năm (2-6 triệu VND)** |
+| Công cụ | Khi nào cần | Miễn phí |
+|---|---|---|
+| Python | Khi làm bot bằng Python hoặc xử lý dữ liệu | ✓ |
+| Node.js | Khi làm trang web (React/Vite) | ✓ |
+| Bun | Khi dự án dùng Bun (nhanh hơn npm 10 lần) | ✓ |
+| Supabase CLI | Quản lý kho hồ sơ | ✓ |
+| GitHub CLI | Tạo PR/issue từ terminal | ✓ |
+| Ollama | Nếu muốn dùng AI trên máy | ✓ |
 
-So sánh: học phí CK1 khoảng 20-40 triệu/năm. Chi phí AI tools ~10-30% học liệu 1 năm. ROI cao nếu app thật sự giúp anh học tốt hơn.
-
-**Tip tiết kiệm**:
-- Multi-model workflow (file 09) giảm 40-60% chi phí AI
-- Dùng model local Ollama (miễn phí) cho task đơn giản
-- Chỉ nạp $5-10 trước, xem hết bao lâu rồi nạp thêm
+**Chi phí**: tất cả đều miễn phí.
 
 ---
 
-## Luồng cài đặt gợi ý (1 buổi tối)
+## Chi phí ước tính 2 tháng đầu
+
+Cho bác sĩ dùng cá nhân:
+
+| Hạng mục | Chi phí 2 tháng | Miễn phí không? |
+|---|---|---|
+| GitHub | 0 | ✓ Miễn phí |
+| VS Code + bộ cài thêm | 0 | ✓ Miễn phí |
+| Git + Homebrew | 0 | ✓ Miễn phí |
+| Supabase (kho hồ sơ) | 0 | ✓ Miễn phí (đủ dùng) |
+| Vercel (đưa web lên) | 0 | ✓ Miễn phí |
+| Cloudflare R2 (kho ảnh) | 0 | ✓ Miễn phí (10GB) |
+| Ollama (AI trên máy) | 0 | ✓ Miễn phí |
+| Claude Code API | 300-600 nghìn | ✗ Trả theo dùng |
+| MiniMax API | 100-200 nghìn | ✗ Trả theo dùng |
+| Tên miền tuỳ chọn | 200-300 nghìn/năm | ✗ Không bắt buộc |
+| **Tổng 2 tháng** | **400-800 nghìn** | |
+
+So sánh: học phí chuyên khoa 1 khoảng 20-40 triệu/năm. Chi phí công cụ chỉ 2-4% học phí — rất đáng nếu ứng dụng giúp anh học tốt hơn.
+
+**Mẹo tiết kiệm**:
+- Dùng đa AI workflow (file 09) giảm 40-60% chi phí AI
+- Dùng Ollama (miễn phí) cho việc đơn giản
+- Nạp 200-300 nghìn trước để thử, xem đủ dùng bao lâu rồi nạp thêm
+
+---
+
+## Luồng cài đặt gợi ý (1 buổi tối 2 giờ)
 
 Nếu anh có ~2 giờ:
 
-1. **15 phút** — Đăng ký 3 tài khoản (GitHub, Anthropic, Supabase)
+1. **15 phút** — Đăng ký 4 tài khoản (GitHub, Anthropic có nạp tiền, Supabase, MiniMax)
 2. **20 phút** — Cài Homebrew (Mac) hoặc WSL2 (Windows) + VS Code
 3. **10 phút** — Cài Claude Code, đăng nhập
-4. **20 phút** — Cài extension trong VS Code (Claude Code, Prettier, GitLens, Cline)
+4. **20 phút** — Cài bộ cài thêm trong VS Code (Claude Code, Prettier, GitLens, Cline)
 5. **15 phút** — Cấu hình Git + đăng nhập GitHub
-6. **30 phút** — Mở Claude Code, gõ "tạo dự án thử nghiệm tên `thu-nghiem`, làm file test.md ghi 'Xin chào'" → xem Claude làm việc
-7. **10 phút** — Chạy `/init` để Claude tự tạo CLAUDE.md mẫu, đọc thử
+6. **30 phút** — Mở Claude Code, gõ "tạo dự án thử nghiệm tên thu-nghiem, làm file test.md ghi Xin chào" → xem Claude làm việc
+7. **10 phút** — Chạy `/init` để Claude sinh file hồ sơ mẫu
 
 Xong buổi 1. Ngày mai có thể bắt đầu dự án chính.
 
 ---
 
-## Checklist "máy sẵn sàng"
+## Bảng kiểm tra "máy sẵn sàng"
 
 Trước khi bắt đầu dự án da liễu, đảm bảo:
 
-- [ ] Có 3 tài khoản (GitHub, Anthropic có nạp tiền, Supabase)
+- [ ] Có 4 tài khoản (GitHub, Anthropic đã nạp tiền, Supabase, MiniMax)
 - [ ] VS Code cài xong, mở được
-- [ ] Extension Claude Code hiển thị icon spark
+- [ ] Bộ cài thêm Claude Code hiển thị icon
 - [ ] Gõ `claude` trong terminal chạy được, đăng nhập thành công
-- [ ] Gõ `git status` trong bất kỳ folder nào không báo "command not found"
-- [ ] Đã tạo 1 folder thử nghiệm và Claude sửa được file trong đó
+- [ ] Gõ `git status` trong bất kỳ thư mục nào không báo "command not found"
+- [ ] Đã tạo 1 thư mục thử nghiệm và Claude sửa được file trong đó
 
 Nếu ≥ 5/6 tick → sang file 04.
 
@@ -189,11 +210,11 @@ Nếu ≥ 5/6 tick → sang file 04.
 
 ## Nếu anh chỉ nhớ được 3 điều
 
-1. **VS Code là nhà** — mở nó là bắt đầu ngày làm việc
-2. **Đừng cài hết tool 1 lượt** — thiếu tool nào Claude báo, cài tool đó
-3. **Bắt đầu chế độ Manual** — sau 1 tuần chuyển Plan mode
+1. **Đa số miễn phí** — chỉ AI dev tính tiền theo dùng (~400-800 nghìn/2 tháng)
+2. **VS Code là nhà** — mở nó là bắt đầu ngày làm việc
+3. **Đừng cài hết một lượt** — thiếu công cụ nào Claude Code báo, cài công cụ đó
 
 ## Đọc tiếp
 
-- [04_tech_stack.md](04_tech_stack.md) — Các stack công nghệ và vai trò từng cái
+- [04_tech_stack.md](04_tech_stack.md) — Các món đồ nghề và vai trò từng cái
 - [06_bao_mat_git.md](06_bao_mat_git.md) — Đọc trước lần commit đầu tiên
