@@ -34,7 +34,17 @@ Nếu anh khớp bối cảnh này, tài liệu sẽ hữu ích.
 
 ---
 
-## Danh sách 9 file (đọc theo thứ tự)
+## Danh sách file (đọc theo thứ tự)
+
+### File ĐỌC ĐẦU TIÊN — bắt buộc trước tất cả
+
+| File | Nội dung | Ước lượng đọc |
+|---|---|---|
+| **[KET_QUA_DU_AN.md](KET_QUA_DU_AN.md)** | **Nếu dự án thành công anh có gì? 5 kết quả đo lường được + 4 bảng so sánh với cách truyền thống + nghiên cứu khoa học hậu thuẫn** | **15 phút — ĐỌC TRƯỚC MỌI THỨ** |
+
+Nếu không thấy giá trị đủ mạnh sau khi đọc file trên → dừng, đừng bắt đầu. 6 tuần setup không đáng cho người không rõ mục tiêu.
+
+### Nếu đã quyết bắt đầu, đọc 9 file dưới theo thứ tự
 
 | # | File | Nội dung | Ước lượng đọc |
 |---|---|---|---|
@@ -57,9 +67,10 @@ Ngoài ra:
 
 ## Lộ trình đọc gợi ý (chia làm 4 buổi)
 
-### Buổi 1 — Bức tranh lớn (60 phút)
+### Buổi 1 — Bức tranh lớn (75 phút)
 
 - Đọc file **00** (file này)
+- Đọc file **KET_QUA_DU_AN.md** — nếu dự án thành công anh có gì (**quyết định có làm hay không sau file này**)
 - Đọc file **01** — 8 khái niệm cơ bản
 - Đọc file **02** — spec-driven vs vibe coding
 
